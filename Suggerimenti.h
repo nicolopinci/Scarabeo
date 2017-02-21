@@ -1102,13 +1102,13 @@ DatiParola SuggerimentiGenerici(string Leggio, int modsug)
     // Esegue in parallelo la ricerca delle parole verticali e orizzontali
 
 
-    std::thread OP(SuggerimentiGenericiOrizzontali, Leggio, rigamin, rigamed, std::ref(Dizi1), std::ref(OrP), GOP);
+    thread OP(SuggerimentiGenericiOrizzontali, Leggio, rigamin, rigamed, std::ref(Dizi1), std::ref(OrP), GOP);
 
-    std::thread OS(SuggerimentiGenericiOrizzontali, Leggio, rigamed, rigamax+1, std::ref(Dizi2), std::ref(OrS), GOS);
+    thread OS(SuggerimentiGenericiOrizzontali, Leggio, rigamed, rigamax+1, std::ref(Dizi2), std::ref(OrS), GOS);
 
-    std::thread VP(SuggerimentiGenericiVerticali, Leggio, colonnamin, colonnamed, std::ref(Dizi3), std::ref(VerP), GVP);
+    thread VP(SuggerimentiGenericiVerticali, Leggio, colonnamin, colonnamed, std::ref(Dizi3), std::ref(VerP), GVP);
 
-    std::thread VS(SuggerimentiGenericiVerticali, Leggio, colonnamed, colonnamax+1, std::ref(Dizi4), std::ref(VerS), GVS);
+    thread VS(SuggerimentiGenericiVerticali, Leggio, colonnamed, colonnamax+1, std::ref(Dizi4), std::ref(VerS), GVS);
 
 
     OP.join();
@@ -1137,10 +1137,5 @@ DatiParola SuggerimentiGenerici(string Leggio, int modsug)
     {
         return VerS;
     }
-
-
-
-    // TRIE per ricerca all'interno dell'albero
-
 
 }
