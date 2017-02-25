@@ -21,7 +21,7 @@ int VisualizzaSacchetto()
     return 0;
 }
 
-void VisualizzaPossibili()
+void VisualizzaPossibili(map<string, int>& ParolePossibili)
 {
     for(auto p:ParolePossibili)
     {

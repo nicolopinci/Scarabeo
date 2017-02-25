@@ -6,7 +6,7 @@ void GiocatoreSuccessivo()
     }
     else if(Giocatore==2)
     {
-        if(numgioc==2)
+        if(NumeroGiocatori==2)
         {
             Giocatore=1;
         }
@@ -17,7 +17,7 @@ void GiocatoreSuccessivo()
     }
     else if(Giocatore==3)
     {
-        if(numgioc==3)
+        if(NumeroGiocatori==3)
         {
             Giocatore=1;
         }
@@ -34,47 +34,17 @@ void GiocatoreSuccessivo()
 
 void RiempiLeggioCorrente(string &LeggioProvvisorio)
 {
-    if(Giocatore==1)
-    {
-        RiempiLeggio(PrimoLeggio);
-        LeggioProvvisorio=PrimoLeggio;
-    }
-    else if(Giocatore==2)
-    {
-        RiempiLeggio(SecondoLeggio);
-        LeggioProvvisorio=SecondoLeggio;
-    }
-    else if(Giocatore==3)
-    {
-        RiempiLeggio(TerzoLeggio);
-        LeggioProvvisorio=TerzoLeggio;
-    }
-    else if(Giocatore==4)
-    {
-        RiempiLeggio(QuartoLeggio);
-        LeggioProvvisorio=QuartoLeggio;
-    }
+
+    RiempiLeggio(Leggii[Giocatore-1]);
+    LeggioProvvisorio=Leggii[Giocatore-1];
+
 }
 
 void RisincronizzaLeggii(string LeggioProvvisorio)
 {
-    if(Giocatore==1)
-    {
-        PrimoLeggio=LeggioProvvisorio;
-    }
-    else if(Giocatore==2)
-    {
-        SecondoLeggio=LeggioProvvisorio;
-    }
-    else if(Giocatore==3)
-    {
-        TerzoLeggio=LeggioProvvisorio;
-    }
-    else if(Giocatore==4)
-    {
-        QuartoLeggio=LeggioProvvisorio;
 
-    }
+    Leggii[Giocatore-1]=LeggioProvvisorio;
+
 }
 
 bool ParolaEsiste(string parola, map<string, string>& Diz)
@@ -88,7 +58,7 @@ bool ParolaEsiste(string parola, map<string, string>& Diz)
 
 }
 
-int ValoreLettera(char c)
+int ValoreLettera(char c, vector<elemSacc>& CopiaS)
 {
     int inizio=0;
     int fine=Sacchetto.size()-1;
@@ -97,11 +67,11 @@ int ValoreLettera(char c)
     while(inizio<=fine)
     {
         mezzo=(inizio+fine)/2;
-        if(toupper(Sacchetto[mezzo].Lettera)==toupper(c))
+        if(toupper(CopiaS[mezzo].Lettera)==toupper(c))
         {
-            return Sacchetto[mezzo].val;
+            return CopiaS[mezzo].val;
         }
-        else if(toupper(Sacchetto[mezzo].Lettera)<toupper(c))
+        else if(toupper(CopiaS[mezzo].Lettera)<toupper(c))
         {
             inizio=mezzo+1;
         }
@@ -258,14 +228,14 @@ void InserisciSuggerimento(int r, int c, string parola, bool vert, string &Leggi
 
 void ParolaMassimaMaiuscola()
 {
-    for(unsigned int car=0;car<parolamax.length();++car)
+    for(unsigned int car=0;car<ParolaMx.parola.length();++car)
     {
-        parolamax[car]=toupper(parolamax[car]);
+        ParolaMx.parola[car]=toupper(ParolaMx.parola[car]);
     }
 }
 
 
-void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezioniverticali)
+void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezioniverticali, vector<elemSacc>& CopiaSacchetto)
 {
     if(intersezioniverticali)
     {
@@ -285,15 +255,15 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
                 {
                     if(Griglia[r][c+l][1]==' ')
                     {
-                        ps+=ValoreLettera(parola[l]);
+                        ps+=ValoreLettera(parola[l], CopiaSacchetto);
                     }
                     if(Griglia[r][c+l][1]=='2')
                     {
-                        ps=ps+2*ValoreLettera(parola[l]);
+                        ps=ps+2*ValoreLettera(parola[l], CopiaSacchetto);
                     }
                     else if(Griglia[r][c+l][1]=='3')
                     {
-                        ps=ps+3*ValoreLettera(parola[l]);
+                        ps=ps+3*ValoreLettera(parola[l], CopiaSacchetto);
                     }
 
                     if(Griglia[r][c+l][2]=='3')
@@ -314,16 +284,16 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
                     {
                         if(Griglia[scorriperpendicolare][c+l][1]==' ')
                         {
-                            ps+=ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps+=ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
 
                         if(Griglia[scorriperpendicolare][c+l][1]=='2')
                         {
-                            ps=ps+2*ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps=ps+2*ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
                         else if(Griglia[scorriperpendicolare][c+l][1]=='3')
                         {
-                            ps=ps+3*ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps=ps+3*ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
 
                         if(Griglia[scorriperpendicolare][c+l][2]=='3')
@@ -346,16 +316,16 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
 
                         if(Griglia[scorriperpendicolare][c+l][1]==' ' )
                         {
-                            ps+=ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps+=ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
 
                         if(Griglia[scorriperpendicolare][c+l][1]=='2')
                         {
-                            ps=ps+2*ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps=ps+2*ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
                         else if(Griglia[scorriperpendicolare][c+l][1]=='3')
                         {
-                            ps=ps+3*ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps=ps+3*ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
 
                         if(Griglia[scorriperpendicolare][c+l][2]=='3')
@@ -392,15 +362,15 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
                 {
                     if(Griglia[r+l][c][1]==' ')
                     {
-                        ps+=ValoreLettera(parola[l]);
+                        ps+=ValoreLettera(parola[l], CopiaSacchetto);
                     }
                     if(Griglia[r+l][c][1]=='2')
                     {
-                        ps=ps+2*ValoreLettera(parola[l]);
+                        ps=ps+2*ValoreLettera(parola[l], CopiaSacchetto);
                     }
                     else if(Griglia[r+l][c][1]=='3')
                     {
-                        ps=ps+3*ValoreLettera(parola[l]);
+                        ps=ps+3*ValoreLettera(parola[l], CopiaSacchetto);
                     }
 
                     if(Griglia[r+l][c][2]=='3')
@@ -421,16 +391,16 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
                     {
                         if(Griglia[r+l][scorriperpendicolare][1]==' ')
                         {
-                            ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0]);
+                            ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
                         }
 
                         if(Griglia[r+l][scorriperpendicolare][1]=='2')
                         {
-                            ps=ps+2*ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps=ps+2*ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
                         else if(Griglia[r+l][scorriperpendicolare][1]=='3')
                         {
-                            ps=ps+3*ValoreLettera(Griglia[scorriperpendicolare][c+l][0]);
+                            ps=ps+3*ValoreLettera(Griglia[scorriperpendicolare][c+l][0], CopiaSacchetto);
                         }
 
                         if(Griglia[r+l][scorriperpendicolare][2]=='3')
@@ -453,16 +423,16 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
 
                         if(Griglia[r+l][scorriperpendicolare][1]==' ' )
                         {
-                            ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0]);
+                            ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
                         }
 
                         if(Griglia[r+l][scorriperpendicolare][1]=='2')
                         {
-                            ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0]);
+                            ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
                         }
                         else if(Griglia[r+l][scorriperpendicolare][1]=='3')
                         {
-                            ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0]);
+                            ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
                         }
 
                         if(Griglia[r+l][scorriperpendicolare][2]=='3')
@@ -486,7 +456,7 @@ void PuntiIntersezioni(string parola, int r, int c, int &pp, bool intersezionive
 
 }
 
-void PuntiParola(string parola, int colonnabottone, int rigabottone, int &punti, bool verticale)
+void PuntiParola(string parola, int colonnabottone, int rigabottone, int &punti, bool verticale, vector<elemSacc>& CopiaSacchetto)
 {
     if(!verticale)
     {
@@ -499,15 +469,15 @@ void PuntiParola(string parola, int colonnabottone, int rigabottone, int &punti,
         {
             if(Griglia[rigabottone][scorrimento][1]==' ')
             {
-                punti=punti+ValoreLettera(Griglia[rigabottone][scorrimento][0]);
+                punti=punti+ValoreLettera(Griglia[rigabottone][scorrimento][0], CopiaSacchetto);
             }
             else if(Griglia[rigabottone][scorrimento][1]=='2')
             {
-                punti=punti+2*ValoreLettera(Griglia[rigabottone][scorrimento][0]);
+                punti=punti+2*ValoreLettera(Griglia[rigabottone][scorrimento][0], CopiaSacchetto);
             }
             else if(Griglia[rigabottone][scorrimento][1]=='3')
             {
-                punti=punti+3*ValoreLettera(Griglia[rigabottone][scorrimento][0]);
+                punti=punti+3*ValoreLettera(Griglia[rigabottone][scorrimento][0], CopiaSacchetto);
             }
             if(Griglia[rigabottone][scorrimento][2]=='2')
             {
@@ -531,15 +501,15 @@ void PuntiParola(string parola, int colonnabottone, int rigabottone, int &punti,
         {
             if(Griglia[scorrimento][colonnabottone][1]==' ')
             {
-                punti=punti+ValoreLettera(Griglia[scorrimento][colonnabottone][0]);
+                punti=punti+ValoreLettera(Griglia[scorrimento][colonnabottone][0], CopiaSacchetto);
             }
             else if(Griglia[scorrimento][colonnabottone][1]=='2')
             {
-                punti=punti+2*ValoreLettera(Griglia[scorrimento][colonnabottone][0]);
+                punti=punti+2*ValoreLettera(Griglia[scorrimento][colonnabottone][0], CopiaSacchetto);
             }
             else if(Griglia[scorrimento][colonnabottone][1]=='3')
             {
-                punti=punti+3*ValoreLettera(Griglia[scorrimento][colonnabottone][0]);
+                punti=punti+3*ValoreLettera(Griglia[scorrimento][colonnabottone][0], CopiaSacchetto);
             }
             if(Griglia[scorrimento][colonnabottone][2]=='2')
             {

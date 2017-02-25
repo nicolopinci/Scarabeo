@@ -46,17 +46,17 @@ void FinestraPrincipale::VisualizzaScarabei()
 
     // Visualizzazione degli scarabei
 
-    if(ScarabeoA!=' ')
+    if(Jolly[0]!=' ')
     {
         QString ScarA="";
-        ScarA=ScarA+ScarabeoA;
+        ScarA=ScarA+Jolly[0];
         ui->Scar1->setText(ScarA);
     }
 
-    if(ScarabeoB!=' ')
+    if(Jolly[1]!=' ')
     {
         QString ScarB="";
-        ScarB=ScarB+ScarabeoB;
+        ScarB=ScarB+Jolly[1];
         ui->Scar2->setText(ScarB);
     }
 }

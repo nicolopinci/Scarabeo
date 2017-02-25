@@ -22,8 +22,6 @@ public:
     void ImpostazioneLeggio(int tessera, QString stringa);
     void VisualizzaScarabei();
     void FineGioco();
-    //DatiParola SuggerimentiGenerici(std::string Leggio);
-    //void SuggerisciGiocatoreCorrente();
 
     ~FinestraPrincipale();
 

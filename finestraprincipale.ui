@@ -121444,7 +121444,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../Immagini/change-management-icon_356734.png</normaloff>../Immagini/change-management-icon_356734.png</iconset>
+      <normaloff>../icone/change-management-icon_356734.png</normaloff>../icone/change-management-icon_356734.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -121499,7 +121499,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../Immagini/idea-icon-md.png</normaloff>../Immagini/idea-icon-md.png</iconset>
+      <normaloff>../icone/idea-icon-md.png</normaloff>../icone/idea-icon-md.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -122568,7 +122568,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../Immagini/icon-next-blue-light-braun-md.png</normaloff>../Immagini/icon-next-blue-light-braun-md.png</iconset>
+      <normaloff>../icone/icon-next-blue-light-braun-md.png</normaloff>../icone/icon-next-blue-light-braun-md.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -122594,7 +122594,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../Immagini/Leaderboard-Regular.png</normaloff>../Immagini/Leaderboard-Regular.png</iconset>
+      <normaloff>../icone/Leaderboard-Regular.png</normaloff>../icone/Leaderboard-Regular.png</iconset>
     </property>
     <property name="iconSize">
      <size>

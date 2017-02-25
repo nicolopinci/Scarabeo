@@ -26,7 +26,7 @@ bool EsisteLettera(char c)
 int LeggiDizionario()
 {
     // Lettura del dizionario
-    ifstream in ("/home/nicolo/ScarabeoConInterfaccia/it_IT.dic", ifstream::in);
+    ifstream in ("it_IT.dic", ifstream::in);
     string stringa;
     string parola="";
     string regole="";
@@ -95,7 +95,7 @@ void LeggiRegole()
     regola regolaSingola;
     pair<string,regola> elemento;
 
-    ifstream in ("/home/nicolo/ScarabeoConInterfaccia/sc_IT.aff", ifstream::in); // Apri il file delle regole
+    ifstream in ("sc_IT.aff", ifstream::in); // Apri il file delle regole
     while(in>>presuf>>nome>>togli>>metti>>dove)
     {
         regolaSingola.dove=dove;
