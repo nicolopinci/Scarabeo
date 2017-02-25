@@ -69,14 +69,10 @@ multimap <string, regola> RegoleEsplose;
 // Matrice tridimensionale per la rappresentazione della griglia
 char Griglia[R][C][LIV];
 
-// FORMAZIONE DELLE PAROLE
-// Mappe relative alle combinazioni di lettere che possono formare una parola
-//map<string, int> ParolePossibili;
-//map <string, int> Combinazioni;
-
 // Gestione delle intersezioni
 bool bonusnosc=false;
 
+// MEMORIZZAZIONE DEI DATI DI UNA PAROLA
 typedef struct
 {
     string parola;
@@ -88,6 +84,9 @@ typedef struct
 } DatiParola;
 
 DatiParola ParolaMx={"",0,"",0,0,false};
+
+// MEMORIZZAZIONE EFFICIENTE DELLE PAROLE
+vector<map<string, string>::iterator> MatriceMP[26][9];
 
 #include <QMessageBox>
 #include <QPlainTextEdit>

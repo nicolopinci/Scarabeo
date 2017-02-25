@@ -1,21 +1,8 @@
 void AssegnaLeggioCorrente(string &LeggioProvvisorio)
 {
-    if(Giocatore==1)
-    {
-        LeggioProvvisorio=PrimoLeggio;
-    }
-    else if(Giocatore==2)
-    {
-        LeggioProvvisorio=SecondoLeggio;
-    }
-    else if(Giocatore==3)
-    {
-        LeggioProvvisorio=TerzoLeggio;
-    }
-    else if(Giocatore==4)
-    {
-        LeggioProvvisorio=QuartoLeggio;
-    }
+
+    LeggioProvvisorio=Leggii[Giocatore-1];
+
 }
 
 void FinestraPrincipale::ImpostazioneLeggio(int tessera, QString stringa)
@@ -51,22 +38,12 @@ void FinestraPrincipale::ImpostazioneLeggio(int tessera, QString stringa)
 
 void InizializzaLeggii()
 {
-    SvuotaLeggio(PrimoLeggio);
-    RiempiLeggio(PrimoLeggio);
-    SvuotaLeggio(SecondoLeggio);
-    RiempiLeggio(SecondoLeggio);
-
-
-    if(numgioc>2)
+    for(int sl=0;sl<NumeroGiocatori;++sl)
     {
-        SvuotaLeggio(TerzoLeggio);
-        RiempiLeggio(TerzoLeggio);
+        SvuotaLeggio(Leggii[sl]);
+        RiempiLeggio(Leggii[sl]);
     }
-    if(numgioc>3)
-    {
-        SvuotaLeggio(QuartoLeggio);
-        RiempiLeggio(QuartoLeggio);
-    }
+
 }
 
 void FinestraPrincipale::MostraLeggioGraficoCorrente(string Leggio)
@@ -79,96 +56,30 @@ void FinestraPrincipale::MostraLeggioGraficoCorrente(string Leggio)
 
 void AggiornaPunteggio(int punti)
 {
-    if(Giocatore==1)
-    {
-        PunteggioA=PunteggioA+punti;
-    }
-    else if(Giocatore==2)
-    {
-        PunteggioB=PunteggioB+punti;
-    }
-    else if(Giocatore==3)
-    {
-        PunteggioC=PunteggioC+punti;
-    }
-    else if(Giocatore==4)
-    {
-        PunteggioD=PunteggioD+punti;
-    }
+
+    PunteggiGiocatori[Giocatore-1]=PunteggiGiocatori[Giocatore-1]+punti;
+
 }
 
 string InserisciParolaMiglioreGiocatore(int riga, int colonna, bool verticale)
 {
-    if(Giocatore==1)
-    {
-        InserisciParola(riga,colonna,parolamax,verticale);
-        RiempiLeggio(PrimoLeggio);
-        return PrimoLeggio;
 
-    }
-    else if(Giocatore==2)
-    {
-        InserisciParola(riga,colonna,parolamax,verticale);
-        RiempiLeggio(SecondoLeggio);
-        return SecondoLeggio;
-
-    }
-    else if(Giocatore==3)
-    {
-        InserisciParola(riga,colonna,parolamax,verticale);
-        RiempiLeggio(TerzoLeggio);
-        return TerzoLeggio;
-
-    }
-    else if(Giocatore==4)
-    {
-        InserisciParola(riga,colonna,parolamax,verticale);
-        RiempiLeggio(QuartoLeggio);
-        return QuartoLeggio;
-
-    }
-    return "";
+    InserisciParola(riga,colonna,ParolaMx.parola,verticale);
+    RiempiLeggio(Leggii[Giocatore-1]);
+    return Leggii[Giocatore-1];
 }
 
 DatiParola SuggerisciGiocatoreCorrente(int modsug)
 {
-    if(Giocatore==1)
-    {
-        return SuggerimentiGenerici(PrimoLeggio, modsug);
-    }
-    else if(Giocatore==2)
-    {
-        return SuggerimentiGenerici(SecondoLeggio, modsug);
-    }
-    else if(Giocatore==3)
-    {
-        return SuggerimentiGenerici(TerzoLeggio, modsug);
-    }
-    else if(Giocatore==4)
-    {
-        return SuggerimentiGenerici(QuartoLeggio, modsug);
-    }
-    return SuggerimentiGenerici(PrimoLeggio, modsug);
+
+    return SuggerimentiGenerici(Leggii[Giocatore-1], modsug);
 }
 
-void GeneraParoleCompleteGiocatore()
+void GeneraParoleCompleteGiocatore(map<string, int>& ParolePossibili)
 {
-    if(Giocatore==1)
-    {
-        GeneraParoleComplete(PrimoLeggio);
-    }
-    else if(Giocatore==2)
-    {
-        GeneraParoleComplete(SecondoLeggio);
-    }
-    else if(Giocatore==3)
-    {
-        GeneraParoleComplete(TerzoLeggio);
-    }
-    else if(Giocatore==4)
-    {
-        GeneraParoleComplete(QuartoLeggio);
-    }
+
+    GeneraParoleComplete(Leggii[Giocatore-1], ParolePossibili);
+
 }
 
 void RimuoviScarabeiLeggio(int &scarab, bool &ammessa, string &LeggioProvvisorio)
@@ -229,103 +140,36 @@ void FinestraPrincipale::FineGioco()
 
     if(LeggioF=="        ")
     {
-        if(Giocatore==1)
+        for(int j=0;j<NumeroGiocatori;++j)
         {
-            for(int i=0;i<LETTDISP;++i)
+            if(j!=Giocatore-1)
             {
-                if(SecondoLeggio[i]!=' ')
+                for(int i=0;i<LETTDISP;++i)
                 {
-                    PunteggioA+=ValoreLettera(SecondoLeggio[i]);
-                }
+                    if(Leggii[j][i]!=' ')
+                    {
+                        PunteggiGiocatori[Giocatore-1]+=ValoreLettera(Leggii[j][i], Sacchetto);
+                    }
 
-                if(TerzoLeggio[i]!=' ')
-                {
-                    PunteggioA+=ValoreLettera(TerzoLeggio[i]);
-                }
 
-                if(QuartoLeggio[i]!=' ')
-                {
-                    PunteggioA+=ValoreLettera(QuartoLeggio[i]);
                 }
             }
         }
 
-        if(Giocatore==2)
-        {
-            for(int i=0;i<LETTDISP;++i)
-            {
-                if(PrimoLeggio[i]!=' ')
-                {
-                    PunteggioB+=ValoreLettera(PrimoLeggio[i]);
-                }
 
-                if(TerzoLeggio[i]!=' ')
-                {
-                    PunteggioB+=ValoreLettera(TerzoLeggio[i]);
-                }
-
-                if(QuartoLeggio[i]!=' ')
-                {
-                    PunteggioB+=ValoreLettera(QuartoLeggio[i]);
-                }
-            }
-        }
-
-        if(Giocatore==3)
-        {
-            for(int i=0;i<LETTDISP;++i)
-            {
-                if(SecondoLeggio[i]!=' ')
-                {
-                    PunteggioC+=ValoreLettera(SecondoLeggio[i]);
-                }
-
-                if(PrimoLeggio[i]!=' ')
-                {
-                    PunteggioC+=ValoreLettera(PrimoLeggio[i]);
-                }
-
-                if(QuartoLeggio[i]!=' ')
-                {
-                    PunteggioC+=ValoreLettera(QuartoLeggio[i]);
-                }
-            }
-        }
-
-        if(Giocatore==4)
-        {
-            for(int i=0;i<LETTDISP;++i)
-            {
-                if(SecondoLeggio[i]!=' ')
-                {
-                    PunteggioA+=ValoreLettera(SecondoLeggio[i]);
-                }
-
-                if(TerzoLeggio[i]!=' ')
-                {
-                    PunteggioA+=ValoreLettera(TerzoLeggio[i]);
-                }
-
-                if(PrimoLeggio[i]!=' ')
-                {
-                    PunteggioA+=ValoreLettera(PrimoLeggio[i]);
-                }
-            }
-        }
-
-        if(max(max(max(PunteggioA, PunteggioB), PunteggioC), PunteggioD)==PunteggioA)
+        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[0])
         {
             informazione+=" giocatore 1";
         }
-        if(max(max(max(PunteggioA, PunteggioB), PunteggioC), PunteggioD)==PunteggioB)
+        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[1])
         {
             informazione+=" giocatore 2";
         }
-        if(max(max(max(PunteggioA, PunteggioB), PunteggioC), PunteggioD)==PunteggioC)
+        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[2])
         {
             informazione+=" giocatore 3";
         }
-        if(max(max(max(PunteggioA, PunteggioB), PunteggioC), PunteggioD)==PunteggioD)
+        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[3])
         {
             informazione+=" giocatore 4";
         }
@@ -352,8 +196,8 @@ void FinestraPrincipale::VisualizzaLeggioGrafico(char lettera, int postessera)
     ImpostazioneLeggio(postessera, stringa);
 }
 
-void NumeroGiocatori()
+void ScegliNumeroGiocatori()
 {
     QInputDialog numGiocatori;
-    numgioc=numGiocatori.getInt(0, "Scarabeo","Inserire il numero dei giocatori",2,2,4,1);
+    NumeroGiocatori=numGiocatori.getInt(0, "Scarabeo","Inserire il numero dei giocatori",2,2,4,1);
 }

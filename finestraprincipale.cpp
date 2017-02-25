@@ -21,7 +21,6 @@ FinestraPrincipale::FinestraPrincipale(QWidget *parent) : // Impostazioni inizia
 
     std::thread Impostazioni(ImpostazioniIniziali);
 
-
     ScegliNumeroGiocatori();
     Impostazioni.join();
 

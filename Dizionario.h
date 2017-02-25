@@ -69,7 +69,7 @@ int LeggiDizionario()
     }
     in.close();
 
-    // Aggiungi tutte le parole di due lettere al dizionario
+    // Aggiungi tutte le parole di due e tre lettere al dizionario
     for(unsigned int prima=1;prima<Sacchetto.size();++prima)
     {
         for(unsigned int seconda=1;seconda<Sacchetto.size();++seconda)
@@ -83,6 +83,17 @@ int LeggiDizionario()
             }
             elemento={parola,""};
             Dizionario.insert(elemento);
+            for(unsigned int terza=1; terza<Sacchetto.size();++terza)
+            {
+                string parolat=parola+Sacchetto[terza].Lettera;
+
+                for(char &carat:parolat)
+                {
+                    carat=tolower(carat);
+                }
+                elemento={parolat,""};
+                Dizionario.insert(elemento);
+            }
         }
     }
 
@@ -234,7 +245,7 @@ void EsplodiRegole() // RICONTROLLARE
 
 }
 
-void ApplicaRegole(multimap<string, regola> Tipologia)
+void ApplicaRegole(multimap<string, regola>& Tipologia)
 {
     string sreg;
     string nuovaparola="";
@@ -518,6 +529,23 @@ void ApplicaRegole(multimap<string, regola> Tipologia)
     Dizionario.insert(DizionarioGen.begin(), DizionarioGen.end());
 }
 
+void CreaMatriceMP(map<string, string>& CDiz)
+{
+    auto iteratore=CDiz.begin();
+    while(iteratore!=CDiz.end())
+    {
+        for(int c=0;c<iteratore->first.length();++c)
+        {
+            if(c<9)
+            {
+                MatriceMP[c][(int)(tolower(iteratore->first[c])-'a')].push_back(iteratore);
+                //cout << iteratore->first << endl;
+            }
+        }
+        ++iteratore;
+    }
+}
+
 void ImpostazioniIniziali()
 {
     LeggiLettere();
@@ -532,6 +560,8 @@ void ImpostazioniIniziali()
     EsplodiRegole();
 
     ApplicaRegole(RegoleEsplose);
+    CreaMatriceMP(Dizionario);
+
 
 
 }

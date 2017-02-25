@@ -5,7 +5,7 @@ int LeggiLettere()
     // Memorizzo le lettere, la loro quantità e i loro valori in uno struct
     // A mano a mano che queste vengono distribuite il numero complessivo di lettere nel sacchetto diminuisce
 
-    ifstream in ("/home/nicolo/ScarabeoConInterfaccia/Lettere.txt", ifstream::in);
+    ifstream in ("Lettere.txt", ifstream::in);
     unsigned int i=0;
     char lettera;
     int num, val;
