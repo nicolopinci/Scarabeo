@@ -29,14 +29,6 @@ void VisualizzaPossibili(map<string, int>& ParolePossibili)
     }
 }
 
-void VisualizzaGenerate()
-{
-    for(auto i:DizionarioGen)
-    {
-        cout << setw(25) << i.first << "\t" << i.second << endl;
-    }
-}
-
 void VisualizzaDizionario()
 {
     for(auto i:Dizionario)

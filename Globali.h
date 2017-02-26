@@ -48,8 +48,6 @@ vector<elemSacc> Sacchetto;
 // GESTIONE DEL DIZIONARIO
 // Mappe che contengono il dizionario
 map<string, string> Dizionario;
-map<string, string> DizionarioGen;
-map<string, string> DizionarioBase;
 
 // Struttura di una regola per la generazione del dizionario
 typedef struct

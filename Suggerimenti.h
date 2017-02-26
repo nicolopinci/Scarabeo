@@ -206,16 +206,9 @@ void EsplodiScarabei(map<string, int>& ParolePossibili)
     EliminaScarabei(ParolePossibili);
 }
 
-void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<string, string>& CopiaDizionario, DatiParola &Correnti, char Griglia[][C][LIV], vector<elemSacc>& CopiaSacchetto)
+void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParola &Correnti)
 {
-    DatiParola Risultato;
 
-    Risultato.parola="";
-    Risultato.punteggio=0;
-    Risultato.LeggioR="";
-    Risultato.riga=0;
-    Risultato.colonna=0;
-    Risultato.maxdirvert=true;
 
     int punteggiomax=0; // Punteggio della parola migliore
 
@@ -230,15 +223,13 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
     bool intersezionivalide=true;
     int pp=0;
     int ps=0;
-    int ms=1;
+    int ms=0;
     int mp=1;
 
     string strutturaparola="";
     bool accettabile=false;
     string lettereeffettive="";
     string CopiaLeggio;
-    int contaspreco=0;
-    int contabuone=0;
 
     int primaletterapos=0;
     int primalettera= ' ';
@@ -257,8 +248,8 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
                     numerospazi=0;
                     strutturaparola="";
 
-                    primalettera=0;
-                    primaletterapos=' ';
+                    primalettera=' ';
+                    primaletterapos=0;
 
                     while(cc<17 && numerospazi<spazitot) // Vai avanti fintanto che ci sono degli spazi
                     {
@@ -268,7 +259,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
                         }
                         else
                         {
-                            if(numerospazi==strutturaparola.length())
+                            if((unsigned int)numerospazi==strutturaparola.length())
                             {
                                 primaletterapos=numerospazi;
                                 primalettera=Griglia[r][cc][0];
@@ -340,7 +331,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
 
                                         contamancanti=0;
                                         int letteranecessaria=0;
-                                        while(letteranecessaria<lettereeffettive.length() && contamancanti<=2)
+                                        while((unsigned int)letteranecessaria<lettereeffettive.length() && contamancanti<=2)
                                         {
                                             bool trovato=false;
                                             int letteraleggio=0;
@@ -364,7 +355,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
                                         // Conto gli scarabei
                                         numeroscarabei=0;
                                         int nsc=0;
-                                        while(nsc<CopiaLeggio.length() && numeroscarabei<=2)
+                                        while((unsigned int)nsc<CopiaLeggio.length() && numeroscarabei<=2)
                                         {
                                             if(CopiaLeggio[nsc]=='#')
                                             {
@@ -389,7 +380,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
                                             {
                                                 int nsc=0;
                                                 int contasc=0;
-                                                while(nsc<CopiaLeggio.length() && contasc<2)
+                                                while((unsigned int)nsc<CopiaLeggio.length() && contasc<2)
                                                 {
                                                     if(CopiaLeggio[nsc]=='#')
                                                     {
@@ -440,7 +431,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
 
 
                                                 // Vedi se la parola esiste
-                                                if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, CopiaDizionario))
+                                                if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, Dizionario))
                                                 {
                                                     if(Griglia[r][cc][0]==' ')
                                                     {
@@ -465,15 +456,15 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
                                                 {
                                                     if(Griglia[r][c+l][1]==' ' )
                                                     {
-                                                        pp+=ValoreLettera(parola[l], CopiaSacchetto);
+                                                        pp+=ValoreLettera(parola[l], Sacchetto);
                                                     }
                                                     if(Griglia[r][c+l][1]=='2')
                                                     {
-                                                        pp=pp+2*ValoreLettera(parola[l], CopiaSacchetto);
+                                                        pp=pp+2*ValoreLettera(parola[l], Sacchetto);
                                                     }
                                                     else if(Griglia[r][c+l][1]=='3')
                                                     {
-                                                        pp=pp+3*ValoreLettera(parola[l], CopiaSacchetto);
+                                                        pp=pp+3*ValoreLettera(parola[l], Sacchetto);
                                                     }
 
                                                     if(Griglia[r][c+l][2]=='3')
@@ -488,7 +479,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
 
                                                 pp=pp*mp;
 
-                                                PuntiIntersezioni(parola, r, c, pp, true, CopiaSacchetto); // Intersezioni verticali
+                                                PuntiIntersezioni(parola, r, c, pp, true, Sacchetto); // Intersezioni verticali
 
                                                 // Aggiungi eventuale bonus lettere (-> lettereeffettive.size())
                                                 if(lettereeffettive.size()==6)
@@ -521,6 +512,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
 
                                                     punteggiomax=pp;
 
+
                                                 }
 
 
@@ -544,18 +536,8 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, map<stri
 
 }
 
-void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string, string>& CopiaDizionario, DatiParola &Correnti, char Griglia[][C][LIV], vector<elemSacc>& CopiaSacchetto)
+void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, DatiParola &Correnti)
 {
-
-    DatiParola Risultato;
-
-    Risultato.parola="";
-    Risultato.punteggio=0;
-    Risultato.LeggioR="";
-    Risultato.riga=0;
-    Risultato.colonna=0;
-    Risultato.maxdirvert=true;
-
     int punteggiomax=0; // Punteggio della parola migliore
 
     int numerospazi=0;
@@ -590,8 +572,8 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                     rc=r;
                     numerospazi=0;
                     strutturaparola="";
-                    primalettera=0;
-                    primaletterapos=' ';
+                    primalettera=' ';
+                    primaletterapos=0;
 
                     while(numerospazi<spazitot && rc<17) // Vai avanti fintanto che ci sono degli spazi
                     {
@@ -606,6 +588,9 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                             {
                                 primaletterapos=numerospazi;
                                 primalettera=Griglia[rc][c][0];
+
+
+
                             }
                         }
                         strutturaparola=strutturaparola+Griglia[rc][c][0];
@@ -626,10 +611,8 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                         for(auto itera:MatriceMP[primaletterapos][(int)(tolower(primalettera)-'a')])
                         {
 
-                            //cout << primaletterapos << "\t" << primalettera << "\t" << itera->first << endl;
-                            //cout << (&itera)->first << endl;
-
                             string parola=itera->first;
+
                             accettabile=false;
                             if(parola.size()==strutturaparola.length())
                             {
@@ -674,7 +657,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
 
                                         contamancanti=0;
                                         int letteranecessaria=0;
-                                        while(letteranecessaria<lettereeffettive.length() && contamancanti<=2)
+                                        while((unsigned int)letteranecessaria<lettereeffettive.length() && contamancanti<=2)
                                         {
                                             bool trovato=false;
                                             int letteraleggio=0;
@@ -698,7 +681,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                         // Conto gli scarabei
                                         numeroscarabei=0;
                                         int nsc=0;
-                                        while(nsc<CopiaLeggio.length() && numeroscarabei<=2)
+                                        while((unsigned int)nsc<CopiaLeggio.length() && numeroscarabei<=2)
                                         {
                                             if(CopiaLeggio[nsc]=='#')
                                             {
@@ -722,7 +705,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                             {
                                                 int nsc=0;
                                                 int contasc=0;
-                                                while(contasc<2 && nsc<CopiaLeggio.length())
+                                                while(contasc<2 && (unsigned int)nsc<CopiaLeggio.length())
                                                 {
                                                     if(CopiaLeggio[nsc]=='#')
                                                     {
@@ -770,7 +753,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                                 }
 
                                                 // Vedi se la parola esiste
-                                                if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, CopiaDizionario))
+                                                if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, Dizionario))
                                                 {
                                                     if(Griglia[rc][c][0]==' ')
                                                     {
@@ -796,15 +779,15 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                                 {
                                                     if(Griglia[r+l][c][1]==' ')
                                                     {
-                                                        pp+=ValoreLettera(parola[l], CopiaSacchetto);
+                                                        pp+=ValoreLettera(parola[l], Sacchetto);
                                                     }
                                                     if(Griglia[r+l][c][1]=='2')
                                                     {
-                                                        pp=pp+2*ValoreLettera(parola[l], CopiaSacchetto);
+                                                        pp=pp+2*ValoreLettera(parola[l], Sacchetto);
                                                     }
                                                     else if(Griglia[r+l][c][1]=='3')
                                                     {
-                                                        pp=pp+3*ValoreLettera(parola[l], CopiaSacchetto);
+                                                        pp=pp+3*ValoreLettera(parola[l], Sacchetto);
                                                     }
 
                                                     if(Griglia[r+l][c][2]=='3')
@@ -832,15 +815,15 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                                         {
                                                             if(Griglia[r+l][c][1]==' ' )
                                                             {
-                                                                ps+=ValoreLettera(parola[l], CopiaSacchetto);
+                                                                ps+=ValoreLettera(parola[l], Sacchetto);
                                                             }
                                                             if(Griglia[r+l][c][1]=='2')
                                                             {
-                                                                ps=ps+2*ValoreLettera(parola[l], CopiaSacchetto);
+                                                                ps=ps+2*ValoreLettera(parola[l], Sacchetto);
                                                             }
                                                             else if(Griglia[r+l][c][1]=='3')
                                                             {
-                                                                ps=ps+3*ValoreLettera(parola[l], CopiaSacchetto);
+                                                                ps=ps+3*ValoreLettera(parola[l], Sacchetto);
                                                             }
 
                                                             if(Griglia[r+l][c][2]=='3')
@@ -861,16 +844,16 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                                             {
                                                                 if(Griglia[r+l][scorriperpendicolare][1]==' ')
                                                                 {
-                                                                    ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
+                                                                    ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
                                                                 }
 
                                                                 if(Griglia[r+l][scorriperpendicolare][1]=='2')
                                                                 {
-                                                                    ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
+                                                                    ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
                                                                 }
                                                                 else if(Griglia[r+l][scorriperpendicolare][1]=='3')
                                                                 {
-                                                                    ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
+                                                                    ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
                                                                 }
 
                                                                 if(Griglia[r+l][scorriperpendicolare][2]=='3')
@@ -893,16 +876,16 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
 
                                                                 if(Griglia[r+l][scorriperpendicolare][1]==' ' )
                                                                 {
-                                                                    ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
+                                                                    ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
                                                                 }
 
                                                                 if(Griglia[r+l][scorriperpendicolare][1]=='2')
                                                                 {
-                                                                    ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
+                                                                    ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
                                                                 }
                                                                 else if(Griglia[r+l][scorriperpendicolare][1]=='3')
                                                                 {
-                                                                    ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], CopiaSacchetto);
+                                                                    ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
                                                                 }
 
                                                                 if(Griglia[r+l][scorriperpendicolare][2]=='3')
@@ -953,8 +936,6 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                                     Correnti.maxdirvert=true;
 
                                                     punteggiomax=pp;
-
-
                                                 }
 
 
@@ -962,91 +943,22 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, map<string
                                         }
 
                                     }
+                                }
+                            }
+
+
                         }
                     }
-
-
                 }
             }
         }
     }
-}
-}
 
 }
 
-DatiParola SuggerimentiGenerici(string Leggio, int modsug)
+void TrovaLimiti(int& rigamin, int& rigamax, int& colonnamin, int& colonnamax)
 {
-
-    DatiParola VerS, OrS, VerP, OrP;
-
-    VerS.parola="";
-    VerS.punteggio=0;
-    VerS.LeggioR="";
-    VerS.riga=0;
-    VerS.colonna=0;
-    VerS.maxdirvert=true;
-
-    OrS.parola="";
-    OrS.punteggio=0;
-    OrS.LeggioR="";
-    OrS.riga=0;
-    OrS.colonna=0;
-    OrS.maxdirvert=false;
-
-    VerP.parola="";
-    VerP.punteggio=0;
-    VerP.LeggioR="";
-    VerP.riga=0;
-    VerP.colonna=0;
-    VerP.maxdirvert=true;
-
-    OrP.parola="";
-    OrP.punteggio=0;
-    OrP.LeggioR="";
-    OrP.riga=0;
-    OrP.colonna=0;
-    OrP.maxdirvert=false;
-
     bool trovamin=false;
-    int rigamin=0;
-    int rigamax=0;
-
-    int colonnamin=0;
-    int colonnamax=0;
-
-    char GOP[R][C][LIV];
-    char GOS[R][C][LIV];
-
-    char GVP[R][C][LIV];
-
-    char GVS[R][C][LIV];
-
-    map<string, string> Dizi1;
-    map<string, string> Dizi2;
-    map<string, string> Dizi3;
-    map<string, string> Dizi4;
-
-    if(modsug==0)
-    {
-        Dizi1=Dizionario;
-        Dizi2=Dizionario;
-        Dizi3=Dizionario;
-        Dizi4=Dizionario;
-    }
-    else
-    {
-        Dizi1=DizionarioBase;
-        Dizi2=DizionarioBase;
-        Dizi3=DizionarioBase;
-        Dizi4=DizionarioBase;
-    }
-
-    vector<elemSacc> S1, S2, S3, S4;
-    S1=Sacchetto;
-    S2=Sacchetto;
-    S3=Sacchetto;
-    S4=Sacchetto;
 
     // Riga minima e rigamassima
     for(int rv=0;rv<R;++rv)
@@ -1090,48 +1002,47 @@ DatiParola SuggerimentiGenerici(string Leggio, int modsug)
         }
     }
 
-    int rigamed=(rigamin+rigamax)/2;
-    int colonnamed=(colonnamin+colonnamax)/2;
+}
 
+void TrovaMedie(int& rigamed, int& colonnamed, int& rigamin, int& rigamax, int& colonnamin, int& colonnamax)
+{
+    rigamed=(rigamin+rigamax)/2;
+    colonnamed=(colonnamin+colonnamax)/2;
+}
 
-    // Copio la griglia nelle griglie locali
-    for(int r=0;r<R;++r)
-    {
-        for(int c=0;c<C;++c)
-        {
-            for(int l=0;l<LIV;++l)
-            {
-                GOP[r][c][l]=Griglia[r][c][l];
-                GOS[r][c][l]=Griglia[r][c][l];
+void InizializzaDatiParola(DatiParola& OrP, DatiParola& OrS, DatiParola& VerP, DatiParola& VerS)
+{
+    VerS.parola="";
+    VerS.punteggio=0;
+    VerS.LeggioR="";
+    VerS.riga=0;
+    VerS.colonna=0;
+    VerS.maxdirvert=true;
 
-                GVP[r][c][l]=Griglia[r][c][l];
+    OrS.parola="";
+    OrS.punteggio=0;
+    OrS.LeggioR="";
+    OrS.riga=0;
+    OrS.colonna=0;
+    OrS.maxdirvert=false;
 
-                GVS[r][c][l]=Griglia[r][c][l];
+    VerP.parola="";
+    VerP.punteggio=0;
+    VerP.LeggioR="";
+    VerP.riga=0;
+    VerP.colonna=0;
+    VerP.maxdirvert=true;
 
-            }
-        }
-    }
+    OrP.parola="";
+    OrP.punteggio=0;
+    OrP.LeggioR="";
+    OrP.riga=0;
+    OrP.colonna=0;
+    OrP.maxdirvert=false;
+}
 
-    // Esegue in parallelo la ricerca delle parole verticali e orizzontali
-
-
-    thread OP(SuggerimentiGenericiOrizzontali, Leggio, rigamin, rigamed, std::ref(Dizi1), std::ref(OrP), GOP, std::ref(S1));
-
-    thread OS(SuggerimentiGenericiOrizzontali, Leggio, rigamed, rigamax+1, std::ref(Dizi2), std::ref(OrS), GOS, std::ref(S2));
-
-    thread VP(SuggerimentiGenericiVerticali, Leggio, colonnamin, colonnamed, std::ref(Dizi3), std::ref(VerP), GVP, std::ref(S3));
-
-    thread VS(SuggerimentiGenericiVerticali, Leggio, colonnamed, colonnamax+1, std::ref(Dizi4), std::ref(VerS), GVS, std::ref(S4));
-
-
-    OP.join();
-
-    OS.join();
-
-    VP.join();
-
-    VS.join();
-
+DatiParola PunteggioMassimo(DatiParola& OrP, DatiParola& OrS, DatiParola& VerP, DatiParola& VerS)
+{
     // Trova quello con il punteggio più alto
     if(OrP.punteggio>=OrS.punteggio && OrP.punteggio>=VerP.punteggio && OrP.punteggio >=VerS.punteggio)
     {
@@ -1150,4 +1061,37 @@ DatiParola SuggerimentiGenerici(string Leggio, int modsug)
         return VerS;
     }
 
+}
+
+DatiParola SuggerimentiGenerici(string Leggio)
+{
+
+    DatiParola VerS, OrS, VerP, OrP;
+    InizializzaDatiParola(VerS, OrS, VerP, OrP);
+
+    int rigamin=0;
+    int rigamed=0;
+    int rigamax=0;
+
+    int colonnamin=0;
+    int colonnamed=0;
+    int colonnamax=0;
+
+
+    TrovaLimiti(rigamin, rigamax, colonnamin, colonnamax);
+    TrovaMedie(rigamed, colonnamed, rigamin, rigamax, colonnamin, colonnamax);
+
+    // Esegue in parallelo la ricerca delle parole verticali e orizzontali
+
+    thread OP(SuggerimentiGenericiOrizzontali, Leggio, rigamin, rigamed, std::ref(OrP));
+    thread OS(SuggerimentiGenericiOrizzontali, Leggio, rigamed, rigamax+1, std::ref(OrS));
+    thread VP(SuggerimentiGenericiVerticali, Leggio, colonnamin, colonnamed, std::ref(VerP));
+    thread VS(SuggerimentiGenericiVerticali, Leggio, colonnamed, colonnamax+1, std::ref(VerS));
+
+    OP.join();
+    OS.join();
+    VP.join();
+    VS.join();
+
+    return PunteggioMassimo(OrP, OrS, VerP, VerS);
 }

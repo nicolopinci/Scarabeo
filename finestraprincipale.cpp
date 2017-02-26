@@ -4,13 +4,13 @@ using namespace std;
 #include "finestraprincipale.h"
 #include "ui_finestraprincipale.h"
 
+#include "Debug.h"
 #include "Sacchetto.h"
 #include "Griglia.h"
 #include "Dizionario.h"
 #include "Parole.h"
 #include "Suggerimenti.h"
 #include "Turni.h"
-#include "Debug.h"
 
 
 FinestraPrincipale::FinestraPrincipale(QWidget *parent) : // Impostazioni iniziali della finestra principale
@@ -779,11 +779,8 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
         bool letteratrovata;
         string LeggioCopiato="";
         AssegnaLeggioCorrente(LeggioCopiato);
-        int modsug=indicaparola.information(0,"Modalità di suggerimento","<qt>Il programma può cercare la parola migliore nelle seguenti modalità:<br ><br >"
-                                                                         "<b>Scansione completa di tutte le parole del dizionario</b><br><font size = 2>Trova effettivamente la parola migliore ma può impiegare qualche minuto.</font><br><br>"
-                                                                         "<b>Scansione delle parole di base</b><br><font size = 2>Trova la parola migliore tra le parole di base, ovvero tra quelle già presenti nel dizionario di partenza.</font></qt>",
-                                            "Ricerca completa", "Ricerca ristretta");
-        InfoMigliore=SuggerisciGiocatoreCorrente(modsug);
+
+        InfoMigliore=SuggerisciGiocatoreCorrente();
 
         ParolaMx=InfoMigliore;
 
@@ -814,7 +811,7 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
             letteratrovata=false;
             contascarabei=0;
 
-            for(int ls=0;ls<LeggioCopiato.size();++ls)
+            for(unsigned int ls=0;ls<LeggioCopiato.size();++ls)
             {
                 if(LeggioCopiato[ls]=='#')
                 {
@@ -826,10 +823,10 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
             {
 
 
-                for(int ll=0;ll<InfoMigliore.parola.size();++ll)
+                for(unsigned int ll=0;ll<InfoMigliore.parola.size();++ll)
                 {
                     letteratrovata=false;
-                    for(int li=0;li<LeggioCopiato.size();++li)
+                    for(unsigned int li=0;li<LeggioCopiato.size();++li)
                     {
                         if(!letteratrovata)
                         {

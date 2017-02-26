@@ -82,6 +82,7 @@ int LeggiDizionario()
                 carat=tolower(carat);
             }
             elemento={parola,""};
+
             Dizionario.insert(elemento);
             for(unsigned int terza=1; terza<Sacchetto.size();++terza)
             {
@@ -254,7 +255,7 @@ void ApplicaRegole(multimap<string, regola>& Tipologia)
     bool finevalida=true;
     bool iniziovalido=true;
     bool negato=false;
-
+    map<string, string> DizionarioGen;
 
     for(auto parola:Dizionario)
     {
@@ -525,7 +526,6 @@ void ApplicaRegole(multimap<string, regola>& Tipologia)
             }
         }
     }
-    DizionarioBase.insert(Dizionario.begin(), Dizionario.end());
     Dizionario.insert(DizionarioGen.begin(), DizionarioGen.end());
 }
 
@@ -534,12 +534,11 @@ void CreaMatriceMP(map<string, string>& CDiz)
     auto iteratore=CDiz.begin();
     while(iteratore!=CDiz.end())
     {
-        for(int c=0;c<iteratore->first.length();++c)
+        for(unsigned int c=0;c<iteratore->first.length();++c)
         {
             if(c<9)
             {
                 MatriceMP[c][(int)(tolower(iteratore->first[c])-'a')].push_back(iteratore);
-                //cout << iteratore->first << endl;
             }
         }
         ++iteratore;

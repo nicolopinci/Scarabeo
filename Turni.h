@@ -69,10 +69,10 @@ string InserisciParolaMiglioreGiocatore(int riga, int colonna, bool verticale)
     return Leggii[Giocatore-1];
 }
 
-DatiParola SuggerisciGiocatoreCorrente(int modsug)
+DatiParola SuggerisciGiocatoreCorrente()
 {
 
-    return SuggerimentiGenerici(Leggii[Giocatore-1], modsug);
+    return SuggerimentiGenerici(Leggii[Giocatore-1]);
 }
 
 void GeneraParoleCompleteGiocatore(map<string, int>& ParolePossibili)
@@ -201,3 +201,4 @@ void ScegliNumeroGiocatori()
     QInputDialog numGiocatori;
     NumeroGiocatori=numGiocatori.getInt(0, "Scarabeo","Inserire il numero dei giocatori",2,2,4,1);
 }
+
