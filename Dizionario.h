@@ -221,7 +221,7 @@ void EsplodiRegole() // RICONTROLLARE
                 elemento={i.first,Nuova};
 
 
-                    RegoleEsplose.insert(elemento);
+                RegoleEsplose.insert(elemento);
 
 
             }
@@ -230,7 +230,7 @@ void EsplodiRegole() // RICONTROLLARE
         {
 
 
-                RegoleEsplose.insert({i.first, i.second});
+            RegoleEsplose.insert({i.first, i.second});
 
         }
     }
@@ -529,20 +529,37 @@ void ApplicaRegole(multimap<string, regola>& Tipologia)
     Dizionario.insert(DizionarioGen.begin(), DizionarioGen.end());
 }
 
-void CreaMatriceMP(map<string, string>& CDiz)
+void CreaMatriceMP()
 {
-    auto iteratore=CDiz.begin();
-    while(iteratore!=CDiz.end())
+    bool inseribile=true;
+
+    for(std::map<string, string>::iterator iteratore=Dizionario.begin(); iteratore!=Dizionario.end();++iteratore)
     {
-        for(unsigned int c=0;c<iteratore->first.length();++c)
+        inseribile=true;
+
+        for(int c=0;c<iteratore->first.length();++c)
         {
             if(c<9)
             {
-                MatriceMP[c][(int)(tolower(iteratore->first[c])-'a')].push_back(iteratore);
+                if((int)(tolower(iteratore->first[c]))<97 || (int)(tolower(iteratore->first[c])>122))
+                {
+                    inseribile=false;
+                }
             }
         }
-        ++iteratore;
+
+        if(inseribile)
+        {
+            for(int c=0;c<iteratore->first.length();++c)
+            {
+                if(c<9)
+                {
+                    MatriceMP[c][(int)(tolower(iteratore->first[c])-97)].push_back(iteratore);
+                }
+            }
+        }
     }
+
 }
 
 void ImpostazioniIniziali()
@@ -559,8 +576,7 @@ void ImpostazioniIniziali()
     EsplodiRegole();
 
     ApplicaRegole(RegoleEsplose);
-    CreaMatriceMP(Dizionario);
-
+    CreaMatriceMP();
 
 
 }
