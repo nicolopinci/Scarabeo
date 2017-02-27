@@ -374,7 +374,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParo
                                             if(contamancanti==0 || (contamancanti==1 && numeroscarabei>=1) || (contamancanti==2 && numeroscarabei==2))
                                             {
                                                 // Se ci sono gli scarabei li elimino (q.b.)
-                                                if(numeroscarabei==1)
+                                                if((numeroscarabei==1 && contamancanti==1) || (numeroscarabei==2 && contamancanti==1))
                                                 {
                                                     int nsc=0;
                                                     while(CopiaLeggio[nsc]!='#')
@@ -383,7 +383,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParo
                                                     }
                                                     CopiaLeggio[nsc]=' ';
                                                 }
-                                                else if(numeroscarabei==2)
+                                                else if(numeroscarabei==2 && contamancanti==2)
                                                 {
                                                     int nsc=0;
                                                     int contasc=0;
@@ -712,7 +712,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, DatiParola
                                             if(contamancanti==0 || (contamancanti==1 && numeroscarabei>=1) || (contamancanti==2 && numeroscarabei==2))
                                             {
                                                 // Se ci sono gli scarabei li elimino (q.b.)
-                                                if(numeroscarabei==1)
+                                                if((numeroscarabei==1 && contamancanti==1) || (numeroscarabei==2 && contamancanti==1))
                                                 {
                                                     int nsc=0;
                                                     while(CopiaLeggio[nsc]!='#')
@@ -721,7 +721,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, DatiParola
                                                     }
                                                     CopiaLeggio[nsc]=' ';
                                                 }
-                                                else if(numeroscarabei==2)
+                                                else if(numeroscarabei==2 && contamancanti==2)
                                                 {
                                                     int nsc=0;
                                                     int contasc=0;

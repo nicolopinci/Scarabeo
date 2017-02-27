@@ -176,10 +176,10 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                     {
                         if(Griglia[rigabottone][scorri][0]!=' ' && Griglia[rigabottone][scorri][0]!=toupper(parola[scorri-colonnabottone]))
                         {
-                            if(parola[scorri-colonnabottone]!='#')
-                            {
+                            /*if(parola[scorri-colonnabottone]!='#')
+                            {*/
                                 ammessa=false;
-                            }
+                           // }
                         }
 
                         if(!ManoCorrente.prima && Griglia[rigabottone][scorri][0]==toupper(parola[scorri-colonnabottone])) // Esiste un'intersezione
@@ -842,7 +842,6 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
             if(contascarabei>0)
             {
 
-
                 for(unsigned int ll=0;ll<InfoMigliore.parola.size();++ll)
                 {
                     letteratrovata=false;
@@ -854,6 +853,10 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                             if(toupper(LeggioCopiato[li])==toupper(InfoMigliore.parola[ll]) || ((ManoCorrente.ParolaMx.maxdirvert && Griglia[ManoCorrente.ParolaMx.riga+ll][ManoCorrente.ParolaMx.colonna][0]!=' ') || (!ManoCorrente.ParolaMx.maxdirvert && Griglia[ManoCorrente.ParolaMx.riga][ManoCorrente.ParolaMx.colonna+ll][0]!=' ')))
                             {
                                 letteratrovata=true;
+                                if(toupper(LeggioCopiato[li])==toupper(InfoMigliore.parola[ll]))
+                                {
+                                    LeggioCopiato[li]=' ';
+                                }
                             }
                         }
                     }

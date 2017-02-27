@@ -82,7 +82,7 @@ void GeneraParoleCompleteGiocatore(map<string, int>& ParolePossibili)
 
 }
 
-void RimuoviScarabeiLeggio(int &scarab, bool &ammessa, string &LeggioProvvisorio)
+void RimuoviScarabeiLeggio(int scarab, bool &ammessa, string &LeggioProvvisorio)
 {
     if(scarab>2)
     {

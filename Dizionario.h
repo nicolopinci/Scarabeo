@@ -620,5 +620,4 @@ void ImpostazioniIniziali()
     ApplicaRegole(RegoleEsplose); // Applica le regole generate al dizionario di base
     CreaMatriceMP(); // Crea la matrice che permette di organizzare efficientemente il dizionario ai fini della ricerca
 
-    cout << Dizionario.size() << endl;
 }
