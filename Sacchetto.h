@@ -1,15 +1,15 @@
-bool acompare(elemSacc lhs, elemSacc rhs) {return lhs.Lettera < rhs.Lettera;}
+bool acompare(elemSacc lhs, elemSacc rhs) {return lhs.Lettera < rhs.Lettera;} // Serve per l'ordinamento delle lettere. Restituisce true se l'elemento lhs è minore dell'elemento rhs
 
 int LeggiLettere()
 {
     // Memorizzo le lettere, la loro quantità e i loro valori in uno struct
     // A mano a mano che queste vengono distribuite il numero complessivo di lettere nel sacchetto diminuisce
 
-    ifstream in ("Lettere.txt", ifstream::in);
+    ifstream in ("Lettere.txt", ifstream::in); // Apertura del sacchetto delle lettere
     unsigned int i=0;
     char lettera;
     int num, val;
-    while(in >> lettera >> num >> val)
+    while(in >> lettera >> num >> val) // Lettura delle informazioni
     {
         Sacchetto.push_back(elemSacc());
         Sacchetto[i].Lettera=lettera;
@@ -21,7 +21,7 @@ int LeggiLettere()
     return 0;
 }
 
-int TotaleLettere()
+int TotaleLettere() // Totale delle lettere presenti nel sacchetto
 {
     int somma=0;
     for(unsigned int i=0;i<Sacchetto.size();++i)
@@ -31,7 +31,7 @@ int TotaleLettere()
     return somma;
 }
 
-char EstraiLettera()
+char EstraiLettera() // Estrazione di una lettera casuale all'interno del sacchetto
 {
     srand(time(NULL));
 

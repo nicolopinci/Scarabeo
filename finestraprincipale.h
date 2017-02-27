@@ -43,6 +43,7 @@ private slots:
 private:
     Ui::FinestraPrincipale *ui;
 
+
 };
 
 #endif // FINESTRAPRINCIPALE_H

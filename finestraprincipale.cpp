@@ -26,7 +26,7 @@ FinestraPrincipale::FinestraPrincipale(QWidget *parent) : // Impostazioni inizia
 
     InizializzaLeggii();
 
-    MostraLeggioGraficoCorrente(Leggii[0]);
+    MostraLeggioGraficoCorrente(ManoCorrente.Leggii[0]);
 
 }
 
@@ -58,21 +58,21 @@ void FinestraPrincipale::AggiornaGriglia(char Matrice[][17][3]) // Aggiornamento
 void FinestraPrincipale::on_pushButton_clicked() // Cambio di tutte le lettere
 {
 
-    if(Leggii[Giocatore-1]!="        ")
+    if(ManoCorrente.Leggii[ManoCorrente.Giocatore-1]!="        ")
     {
-        for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+        for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
         {
             for(unsigned int sacc=0;sacc<Sacchetto.size();++sacc)
             {
-                if(Leggii[Giocatore-1][t]==Sacchetto[sacc].Lettera)
+                if(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t]==Sacchetto[sacc].Lettera)
                 {
                     Sacchetto[sacc].num=Sacchetto[sacc].num+1;
                 }
             }
         }
     }
-    SvuotaLeggio(Leggii[Giocatore-1]);
-    RiempiLeggio(Leggii[Giocatore-1]);
+    SvuotaLeggio(ManoCorrente.Leggii[ManoCorrente.Giocatore-1]);
+    RiempiLeggio(ManoCorrente.Leggii[ManoCorrente.Giocatore-1]);
 
 
 
@@ -104,7 +104,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
         {
             if(Griglia[r][c][0]!=' ')
             {
-                prima=false;
+                ManoCorrente.prima=false;
             }
         }
     }
@@ -126,7 +126,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
     parola=ui->plainTextEdit->toPlainText().toStdString();
 
-    if(parola!="" && (ParolaEsiste(parola, Dizionario) || parola.length()==2))
+    if(parola!="" && (ParolaEsiste(parola, Dizionario) || parola.length()==2 || parola.length()==3))
     {
         if(selezionato==0) // Non sono state selezionate celle
         {
@@ -154,9 +154,18 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
             // INSERIMENTO IN ORIZZONTALE
             case 0:
+
+                ammessa=false;
+                for(int colcor=colonnabottone;colcor<colonnabottone+parola.length();++colcor)
+                {
+                    if(Griglia[rigabottone][colcor][0]==' ')
+                    {
+                        ammessa=true;
+                    }
+                }
                 intersezione=false;
-                sct1=Jolly[0];
-                sct2=Jolly[1];
+                ManoCorrente.Jolly[1][0]=ManoCorrente.Jolly[0][0];
+                ManoCorrente.Jolly[1][1]=ManoCorrente.Jolly[0][1];
 
                 // Se la parola viene inserita in una posizione tale da non avere altre celle adiacenti (a dx o a sx) non vuote
                 if(colonnabottone+parola.length()<=C && ((colonnabottone>0 && Griglia[rigabottone][colonnabottone-1][0]==' ') || (colonnabottone==0)) && (Griglia[rigabottone][colonnabottone+parola.length()][0]==' ' || colonnabottone+parola.length()==C))
@@ -173,7 +182,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                             }
                         }
 
-                        if(!prima && Griglia[rigabottone][scorri][0]==toupper(parola[scorri-colonnabottone])) // Esiste un'intersezione
+                        if(!ManoCorrente.prima && Griglia[rigabottone][scorri][0]==toupper(parola[scorri-colonnabottone])) // Esiste un'intersezione
                         {
                             intersezione=true;
                         }
@@ -195,13 +204,13 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                             if(!trovato)
                             {
                                 ++scarab;
-                                if(sct1==' ')
+                                if(ManoCorrente.Jolly[1][0]==' ')
                                 {
-                                    sct1=toupper(parola[scorri-rigabottone]);
+                                    ManoCorrente.Jolly[1][0]=toupper(parola[scorri-rigabottone]);
                                 }
                                 else
                                 {
-                                    sct2=toupper(parola[scorri-rigabottone]);
+                                    ManoCorrente.Jolly[1][1]=toupper(parola[scorri-rigabottone]);
                                 }
                             }
                         }
@@ -217,7 +226,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                 }
 
                 // Se la parola è la prima ed è possibile metterla in una certa posizione (serve nel caso in cui la griglia venga definita come più corta delle lettere disponibili)
-                if(ammessa && prima)
+                if(ammessa && ManoCorrente.prima)
                 {
                     intersezione=true;
                     if(rigabottone!=8) // La parola infatti deve passare per il centro
@@ -276,7 +285,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
                         // Se l'intersezione non esiste la parola non viene accettata
                         // Vengono accettate le intersezioni che formano parole di 2 lettere
-                        if(!ParolaEsiste(parolaperpendicolare, Dizionario) && parolaperpendicolare.length()>2)
+                        if(!ParolaEsiste(parolaperpendicolare, Dizionario) && parolaperpendicolare.length()>3)
                         {
                             ammessa=false;
                         }
@@ -287,14 +296,14 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                     //prima=false;
                     AggiornaGriglia(Griglia);
 
-                    if(Jolly[0]==' ')
+                    if(ManoCorrente.Jolly[0][0]==' ')
                     {
-                        Jolly[0]=toupper(sct1);
+                        ManoCorrente.Jolly[0][0]=toupper(ManoCorrente.Jolly[1][0]);
                     }
 
-                    if(Jolly[1]==' ')
+                    if(ManoCorrente.Jolly[0][1]==' ')
                     {
-                        Jolly[1]=toupper(sct2);
+                        ManoCorrente.Jolly[0][1]=toupper(ManoCorrente.Jolly[1][1]);
                     }
 
                     int punteggioperp=0;
@@ -303,12 +312,12 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
                     InserisciParola(rigabottone,colonnabottone, parola,false); // orizzontale
 
-                    PuntiParola(parola, colonnabottone, rigabottone, punteggiosingolaparola, false, Sacchetto); // parola orizzontale
-                    punteggiosingolaparola+=punteggioperp;
+                    PuntiParola(parola, colonnabottone, rigabottone, ManoCorrente.punteggiosingolaparola, false, Sacchetto); // parola orizzontale
+                    ManoCorrente.punteggiosingolaparola+=punteggioperp;
 
-                    PuntiBonus(lettereinserite, punteggiosingolaparola, bonusnosc);
+                    PuntiBonus(lettereinserite, ManoCorrente.punteggiosingolaparola, ManoCorrente.bonusnosc);
 
-                    AggiornaPunteggio(punteggiosingolaparola);
+                    AggiornaPunteggio(ManoCorrente.punteggiosingolaparola);
 
                     RisincronizzaLeggii(LeggioProvvisorio);
                     RiempiLeggioCorrente(LeggioProvvisorio);
@@ -331,8 +340,17 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
             case 1: // Parola principale verticale
 
-                sct1=Jolly[0];
-                sct2=Jolly[1];
+                ammessa=false;
+                for(int rigcor=rigabottone;rigcor<rigabottone+parola.length();++rigcor)
+                {
+                    if(Griglia[rigcor][colonnabottone][0]==' ')
+                    {
+                        ammessa=true;
+                    }
+                }
+
+                ManoCorrente.Jolly[1][0]=ManoCorrente.Jolly[0][0];
+                ManoCorrente.Jolly[1][1]=ManoCorrente.Jolly[0][1];
 
                 intersezione=false;
 
@@ -351,7 +369,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                             }
                         }
 
-                        if(!prima && Griglia[scorri][colonnabottone][0]==toupper(parola[scorri-rigabottone])) // Esiste un'intersezione
+                        if(!ManoCorrente.prima && Griglia[scorri][colonnabottone][0]==toupper(parola[scorri-rigabottone])) // Esiste un'intersezione
                         {
                             intersezione=true;
                         }
@@ -374,13 +392,13 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                             {
                                 ++scarab;
 
-                                if(sct1==' ')
+                                if(ManoCorrente.Jolly[1][0]==' ')
                                 {
-                                    sct1=toupper(parola[scorri-rigabottone]);
+                                    ManoCorrente.Jolly[1][0]=toupper(parola[scorri-rigabottone]);
                                 }
                                 else
                                 {
-                                    sct2=toupper(parola[scorri-rigabottone]);
+                                    ManoCorrente.Jolly[1][1]=toupper(parola[scorri-rigabottone]);
                                 }
                             }
                         }
@@ -396,7 +414,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                 }
 
                 // Se la parola è la prima ed è possibile metterla in una certa posizione (serve nel caso in cui la griglia venga definita come più corta delle lettere disponibili)
-                if(ammessa && prima)
+                if(ammessa && ManoCorrente.prima)
                 {
                     intersezione=true;
                     if(colonnabottone!=8) // La parola infatti deve passare per il centro
@@ -465,14 +483,14 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
                 {
                     //prima=false;
 
-                    if(Jolly[0]==' ')
+                    if(ManoCorrente.Jolly[0][0]==' ')
                     {
-                        Jolly[0]=toupper(sct1);
+                        ManoCorrente.Jolly[0][0]=toupper(ManoCorrente.Jolly[1][0]);
                     }
 
-                    if(Jolly[1]==' ')
+                    if(ManoCorrente.Jolly[0][1]==' ')
                     {
-                        Jolly[1]=toupper(sct2);
+                        ManoCorrente.Jolly[0][1]=toupper(ManoCorrente.Jolly[1][1]);
                     }
 
                     int punteggioperp=0;
@@ -481,12 +499,12 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
                     InserisciParola(rigabottone,colonnabottone, parola,true); // verticali
 
-                    PuntiParola(parola, colonnabottone, rigabottone, punteggiosingolaparola, true, Sacchetto); // parola verticaleR
-                    punteggiosingolaparola+=punteggioperp;
+                    PuntiParola(parola, colonnabottone, rigabottone, ManoCorrente.punteggiosingolaparola, true, Sacchetto); // parola verticaleR
+                    ManoCorrente.punteggiosingolaparola+=punteggioperp;
 
-                    PuntiBonus(lettereinserite, punteggiosingolaparola, bonusnosc);
+                    PuntiBonus(lettereinserite, ManoCorrente.punteggiosingolaparola, ManoCorrente.bonusnosc);
 
-                    AggiornaPunteggio(punteggiosingolaparola);
+                    AggiornaPunteggio(ManoCorrente.punteggiosingolaparola);
 
                     RisincronizzaLeggii(LeggioProvvisorio);
                     RiempiLeggioCorrente(LeggioProvvisorio);
@@ -537,7 +555,7 @@ void FinestraPrincipale::on_pushButton_2_clicked() // Inserimento di una parola
 
 
 
-    QString nomegiocatore="Giocatore "+ QString::number(Giocatore);
+    QString nomegiocatore="Giocatore "+ QString::number(ManoCorrente.Giocatore);
     ui->label->setText(nomegiocatore);
 
     RiempiLeggioCorrente(LeggioProvvisorio);
@@ -553,78 +571,78 @@ void FinestraPrincipale::on_pushButton_4_clicked() // Passa il turno senza cambi
 {
 
     // Passa il turno
-    if(Giocatore==1)
+    if(ManoCorrente.Giocatore==1)
     {
-        Giocatore=2;
+        ManoCorrente.Giocatore=2;
 
-        for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+        for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
         {
-            this->VisualizzaLeggioGrafico(Leggii[Giocatore-1][t],t);
+            this->VisualizzaLeggioGrafico(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t],t);
         }
         this->repaint();
     }
-    else if(Giocatore==2)
+    else if(ManoCorrente.Giocatore==2)
     {
-        if(NumeroGiocatori==2)
+        if(ManoCorrente.NumeroGiocatori==2)
         {
-            Giocatore=1;
-            for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+            ManoCorrente.Giocatore=1;
+            for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
             {
-                this->VisualizzaLeggioGrafico(Leggii[Giocatore-1][t],t);
+                this->VisualizzaLeggioGrafico(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t],t);
             }
             this->repaint();
         }
         else
         {
-            Giocatore=3;
-            for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+            ManoCorrente.Giocatore=3;
+            for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
             {
-                this->VisualizzaLeggioGrafico(Leggii[Giocatore-1][t],t);
+                this->VisualizzaLeggioGrafico(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t],t);
             }
             this->repaint();
         }
     }
-    else if(Giocatore==3)
+    else if(ManoCorrente.Giocatore==3)
     {
-        if(NumeroGiocatori==3)
+        if(ManoCorrente.NumeroGiocatori==3)
         {
-            Giocatore=1;
-            for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+            ManoCorrente.Giocatore=1;
+            for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
             {
-                this->VisualizzaLeggioGrafico(Leggii[Giocatore-1][t],t);
+                this->VisualizzaLeggioGrafico(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t],t);
             }
             this->repaint();
         }
         else
         {
-            Giocatore=4;
-            for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+            ManoCorrente.Giocatore=4;
+            for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
             {
-                this->VisualizzaLeggioGrafico(Leggii[Giocatore-1][t],t);
+                this->VisualizzaLeggioGrafico(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t],t);
             }
             this->repaint();
         }
     }
-    else if(Giocatore==4)
+    else if(ManoCorrente.Giocatore==4)
     {
-        Giocatore=1;
-        for(unsigned int t=0;t<Leggii[Giocatore-1].length();++t)
+        ManoCorrente.Giocatore=1;
+        for(unsigned int t=0;t<ManoCorrente.Leggii[ManoCorrente.Giocatore-1].length();++t)
         {
-            this->VisualizzaLeggioGrafico(Leggii[Giocatore-1][t],t);
+            this->VisualizzaLeggioGrafico(ManoCorrente.Leggii[ManoCorrente.Giocatore-1][t],t);
         }
 
     }
-    ui->label->setText("Giocatore " + QString::number(Giocatore));
+    ui->label->setText("Giocatore " + QString::number(ManoCorrente.Giocatore));
 }
 
 void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
 {
 
     string LeggioP="";
-    ParolaMx.parola="";
+    ManoCorrente.ParolaMx.parola="";
     QMessageBox indicaparola;
     QMessageBox nessunaparola;
-    prima=true;
+    ManoCorrente.prima=true;
     map<string, int> ParolePossibili;
 
     for(int r=0;r<R;++r)
@@ -633,19 +651,19 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
         {
             if(Griglia[r][c][0]!=' ')
             {
-                prima=false;
+                ManoCorrente.prima=false;
             }
         }
     }
 
     VisualizzaScarabei();
 
-    if(prima)
+    if(ManoCorrente.prima)
     {
         GeneraParoleCompleteGiocatore(ParolePossibili);
         EsplodiScarabei(ParolePossibili);
         TrovaPrimaMigliore(ParolePossibili);
-        QString informazione="La parola migliore è " + QString::fromUtf8(ParolaMx.parola.c_str()) + " e vale " + QString::number(ParolaMx.punteggio);
+        QString informazione="La parola migliore è " + QString::fromUtf8(ManoCorrente.ParolaMx.parola.c_str()) + " e vale " + QString::number(ManoCorrente.ParolaMx.punteggio);
         int scelta=indicaparola.information(0,"Parola migliore",informazione, "Inserire la parola", "Evidenziare la cella di partenza");
 
         int contamancanti=0;
@@ -656,18 +674,18 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
         {
         case 0: // Inserire la parola
 
-            LeggioP=InserisciParolaMiglioreGiocatore(8, ParolaMx.colonna, false);
+            LeggioP=InserisciParolaMiglioreGiocatore(8, ManoCorrente.ParolaMx.colonna, false);
 
 
             contamancanti=0;
             numeroscarabei=0;
 
-            for(unsigned int letteranecessaria=0;letteranecessaria<ParolaMx.parola.length();++letteranecessaria)
+            for(unsigned int letteranecessaria=0;letteranecessaria<ManoCorrente.ParolaMx.parola.length();++letteranecessaria)
             {
                 bool trovato=false;
                 for(int letteraleggio=0;letteraleggio<LETTDISP;++letteraleggio)
                 {
-                    if(tolower(ParolaMx.parola[letteranecessaria])==tolower(LeggioP[letteraleggio]) && !trovato)
+                    if(tolower(ManoCorrente.ParolaMx.parola[letteranecessaria])==tolower(LeggioP[letteraleggio]) && !trovato)
                     {
                         LeggioP[letteraleggio]=' ';
                         trovato=true;
@@ -677,13 +695,13 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                 if(!trovato)
                 {
                     ++contamancanti;
-                    if(sct1==' ')
+                    if(ManoCorrente.Jolly[1][0]==' ')
                     {
-                        sct1=toupper(ParolaMx.parola[letteranecessaria]);
+                        ManoCorrente.Jolly[1][0]=toupper(ManoCorrente.ParolaMx.parola[letteranecessaria]);
                     }
                     else
                     {
-                        sct2=toupper(ParolaMx.parola[letteranecessaria]);
+                        ManoCorrente.Jolly[1][1]=toupper(ManoCorrente.ParolaMx.parola[letteranecessaria]);
                     }
                 }
             }
@@ -707,13 +725,13 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                     {
                         ++nsc;
                     }
-                    if(Jolly[0]==' ')
+                    if(ManoCorrente.Jolly[0][0]==' ')
                     {
-                        Jolly[0]=toupper(sct1);
+                        ManoCorrente.Jolly[0][0]=toupper(ManoCorrente.Jolly[1][0]);
                     }
-                    else if(Jolly[1]==' ')
+                    else if(ManoCorrente.Jolly[0][1]==' ')
                     {
-                        Jolly[1]=toupper(sct2);
+                        ManoCorrente.Jolly[0][1]=toupper(ManoCorrente.Jolly[1][1]);
                     }
                     VisualizzaScarabei();
                     LeggioP[nsc]=' ';
@@ -724,13 +742,13 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                     {
                         if(LeggioP[nsc]=='#')
                         {
-                            if(Jolly[0]==' ')
+                            if(ManoCorrente.Jolly[0][0]==' ')
                             {
-                                Jolly[0]=toupper(sct1);
+                                ManoCorrente.Jolly[0][0]=toupper(ManoCorrente.Jolly[1][0]);
                             }
-                            else if(Jolly[1]==' ')
+                            else if(ManoCorrente.Jolly[0][1]==' ')
                             {
-                                Jolly[1]=toupper(sct2);
+                                ManoCorrente.Jolly[0][1]=toupper(ManoCorrente.Jolly[1][1]);
                             }
                             VisualizzaScarabei();
                             LeggioP[nsc]=' ';
@@ -741,14 +759,15 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
 
 
             AggiornaGriglia(Griglia);
-            AggiornaPunteggio(ParolaMx.punteggio);
+            AggiornaPunteggio(ManoCorrente.ParolaMx.punteggio);
 
             RisincronizzaLeggii(LeggioP);
             RiempiLeggioCorrente(LeggioP);
 
+
             FinestraPrincipale::on_pushButton_4_clicked(); // Passa al giocatore successivo
             this->repaint();
-            prima=false;
+            ManoCorrente.prima=false;
 
             break;
         case 1: // Selezionare la cella di partenza della parola
@@ -759,7 +778,7 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                     QLayoutItem* item = ui->gridLayout_2->itemAtPosition(r, c);
                     QWidget* widget = item->widget();
                     QPushButton* Bottone = dynamic_cast<QPushButton*>(widget);
-                    if(r==8 && c==ParolaMx.colonna)
+                    if(r==8 && c==ManoCorrente.ParolaMx.colonna)
                     {
                         Bottone->setChecked(true);
                     }
@@ -782,28 +801,29 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
 
         InfoMigliore=SuggerisciGiocatoreCorrente();
 
-        ParolaMx=InfoMigliore;
+        ManoCorrente.ParolaMx=InfoMigliore;
 
-        if(ParolaMx.parola=="")
+        if(ManoCorrente.ParolaMx.parola=="")
         {
             nessunaparola.information(0, "Nessuna parola", "Non è possibile inserire parole con le lettere a disposizione.");
             return;
         }
         ParolaMassimaMaiuscola();
 
-        QString informazione="La parola migliore è " + QString::fromUtf8(ParolaMx.parola.c_str()) + ", vale " + QString::number(ParolaMx.punteggio) + " ed è posizionata in ";
+        QString informazione="La parola migliore è " + QString::fromUtf8(ManoCorrente.ParolaMx.parola.c_str()) + ", vale " + QString::number(ManoCorrente.ParolaMx.punteggio) + " ed è posizionata in ";
 
-        if(ParolaMx.maxdirvert)
+        if(ManoCorrente.ParolaMx.maxdirvert)
         {
-            informazione=informazione+" verticale.";
+            informazione=informazione+"verticale.";
         }
         else
         {
-            informazione=informazione+" orizzontale.";
+            informazione=informazione+"orizzontale.";
         }
         int scelta=indicaparola.information(0,"Parola migliore",informazione, "Inserire la parola", "Evidenziare la cella di partenza");
 
         int contascarabei=0;
+
         switch(scelta)
         {
         case 0: // Inserimento della parola
@@ -831,7 +851,7 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                         if(!letteratrovata)
                         {
                             // Se la lettera è nel leggio oppure esisteva già sul tabellone
-                            if(toupper(LeggioCopiato[li])==toupper(InfoMigliore.parola[ll]) || ((ParolaMx.maxdirvert && Griglia[ParolaMx.riga+ll][ParolaMx.colonna][0]!=' ') || (!ParolaMx.maxdirvert && Griglia[ParolaMx.riga][ParolaMx.colonna+ll][0]!=' ')))
+                            if(toupper(LeggioCopiato[li])==toupper(InfoMigliore.parola[ll]) || ((ManoCorrente.ParolaMx.maxdirvert && Griglia[ManoCorrente.ParolaMx.riga+ll][ManoCorrente.ParolaMx.colonna][0]!=' ') || (!ManoCorrente.ParolaMx.maxdirvert && Griglia[ManoCorrente.ParolaMx.riga][ManoCorrente.ParolaMx.colonna+ll][0]!=' ')))
                             {
                                 letteratrovata=true;
                             }
@@ -840,13 +860,13 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
 
                     if(!letteratrovata)
                     {
-                        if(Jolly[0]==' ')
+                        if(ManoCorrente.Jolly[0][0]==' ')
                         {
-                            Jolly[0]=toupper(InfoMigliore.parola[ll]);
+                            ManoCorrente.Jolly[0][0]=toupper(InfoMigliore.parola[ll]);
                         }
-                        else
+                        else if(ManoCorrente.Jolly[0][1]==' ')
                         {
-                            Jolly[1]=toupper(InfoMigliore.parola[ll]);
+                            ManoCorrente.Jolly[0][1]=toupper(InfoMigliore.parola[ll]);
                         }
 
                     }
@@ -854,13 +874,14 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
 
             }
 
-            InserisciParolaMiglioreGiocatore(ParolaMx.riga, ParolaMx.colonna, ParolaMx.maxdirvert);
+            InserisciParolaMiglioreGiocatore(ManoCorrente.ParolaMx.riga, ManoCorrente.ParolaMx.colonna, ManoCorrente.ParolaMx.maxdirvert);
             AggiornaGriglia(Griglia);
 
-            AggiornaPunteggio(ParolaMx.punteggio);
+            AggiornaPunteggio(ManoCorrente.ParolaMx.punteggio);
             VisualizzaScarabei();
             RisincronizzaLeggii(InfoMigliore.LeggioR);
             RiempiLeggioCorrente(InfoMigliore.LeggioR);
+
             FineGioco();
             FinestraPrincipale::on_pushButton_4_clicked(); // Passa al giocatore successivo
             this->repaint();
@@ -874,7 +895,7 @@ void FinestraPrincipale::on_pushButton_3_clicked() // Suggerimenti
                     QLayoutItem* item = ui->gridLayout_2->itemAtPosition(r, c);
                     QWidget* widget = item->widget();
                     QPushButton* Bottone = dynamic_cast<QPushButton*>(widget);
-                    if(r==ParolaMx.riga && c==ParolaMx.colonna)
+                    if(r==ManoCorrente.ParolaMx.riga && c==ManoCorrente.ParolaMx.colonna)
                     {
                         Bottone->setChecked(true);
                     }
@@ -892,14 +913,14 @@ void FinestraPrincipale::on_pushButton_5_clicked() // Punteggi
 {
     QMessageBox Punteggi;
     QString Messaggio="";
-    Messaggio=Messaggio+"Giocatore 1:\t"+QString::number(PunteggiGiocatori[0]);
-    Messaggio=Messaggio+"\nGiocatore 2:\t"+QString::number(PunteggiGiocatori[1]);
-    if(NumeroGiocatori>=3)
+    Messaggio=Messaggio+"Giocatore 1:\t"+QString::number(ManoCorrente.PunteggiGiocatori[0]);
+    Messaggio=Messaggio+"\nGiocatore 2:\t"+QString::number(ManoCorrente.PunteggiGiocatori[1]);
+    if(ManoCorrente.NumeroGiocatori>=3)
     {
-        Messaggio=Messaggio+"\nGiocatore 3:\t"+QString::number(PunteggiGiocatori[2]);
-        if(NumeroGiocatori==4)
+        Messaggio=Messaggio+"\nGiocatore 3:\t"+QString::number(ManoCorrente.PunteggiGiocatori[2]);
+        if(ManoCorrente.NumeroGiocatori==4)
         {
-            Messaggio=Messaggio+"\nGiocatore 4:\t"+QString::number(PunteggiGiocatori[3]);
+            Messaggio=Messaggio+"\nGiocatore 4:\t"+QString::number(ManoCorrente.PunteggiGiocatori[3]);
         }
     }
     Punteggi.information(0, "Riepilogo dei punteggi", Messaggio);
@@ -919,7 +940,7 @@ void FinestraPrincipale::on_Scar1_clicked()
         {
             LeggioS[ll]='#';
             ui->Scar1->setText("");
-            Jolly[0]=' ';
+            ManoCorrente.Jolly[0][0]=' ';
             trovato=true;
         }
         ++ll;
@@ -942,7 +963,7 @@ void FinestraPrincipale::on_Scar2_clicked()
         {
             LeggioS[ll]='#';
             ui->Scar2->setText("");
-            Jolly[1]=' ';
+            ManoCorrente.Jolly[0][1]=' ';
             trovato=true;
         }
         ++ll;

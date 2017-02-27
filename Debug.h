@@ -39,15 +39,7 @@ void VisualizzaDizionario()
 
 
 
-void VisualizzaRegoleSemplici()
-{
-    for(auto i:Regole)
-    {
-        cout << setw(25) << i.second.presuf << "\t" << i.first << "\t" << i.second.metti << "\t" << i.second.togli << "\t" << i.second.dove << endl;
-    }
-}
-
-int ContaRegole(multimap<string, string> Multimappa, string nomeRegola)
+int ContaRegole(multimap<string, string>& Multimappa, string nomeRegola)
 {
     return Multimappa.count(nomeRegola);
 

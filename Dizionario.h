@@ -1,5 +1,6 @@
 bool EsisteLettera(char c)
 {
+    // Ricerca dicotomica all'interno del sacchetto delle lettere
     int inizio=0;
     int fine=Sacchetto.size()-1;
     int mezzo;
@@ -9,34 +10,34 @@ bool EsisteLettera(char c)
         mezzo=(inizio+fine)/2;
         if(toupper(Sacchetto[mezzo].Lettera)==toupper(c))
         {
-            return true;
+            return true; // Se la lettera è stata trovata (e quindi esiste)
         }
         else if(toupper(Sacchetto[mezzo].Lettera)<toupper(c))
         {
-            inizio=mezzo+1;
+            inizio=mezzo+1; // Nel caso in cui la lettera sia precedente a quella considerata
         }
         else
         {
-            fine=mezzo-1;
+            fine=mezzo-1; // Nel caso in cui la lettera sia successiva a quella considerata
         }
     }
-    return false;
+    return false; // Se la lettera non è stata trovata nel dizionario
 }
 
 int LeggiDizionario()
 {
     // Lettura del dizionario
-    ifstream in ("it_IT.dic", ifstream::in);
+    ifstream in ("it_IT.dic", ifstream::in); // Apertura del file del dizionario
     string stringa;
     string parola="";
     string regole="";
     bool carval=true;
     bool reg=false;
     pair<string, string> elemento;
-    while(in >> stringa)
+    while(in >> stringa) // Lettura della parola e della regola collegata (un'unica stringa)
     {
-        reg=false;
-        carval=true;
+        reg=false; // Indica se sto leggendo la regola (false se non è così)
+        carval=true; // Indica se il carattere è valido
         regole="";
         parola="";
         if(stringa.length()>2)
@@ -45,31 +46,31 @@ int LeggiDizionario()
             {
                 if((!EsisteLettera(c) && c!='/') || (isupper(c) && reg==false))
                 {
-                    carval=false;
+                    carval=false; // Non è valido se è maiuscolo, se è / o se non esiste nel sacchetto
                 }
                 else if(EsisteLettera(c) && reg==false)
                 {
-                    parola=parola+c;
+                    parola=parola+c; // Se invece il carattere esiste
                 }
-                else if(EsisteLettera(c) && reg==true)
+                else if(reg==true && c!='/') // Se sto leggendo la regola
                 {
                     regole=regole+c;
                 }
-                else if(c=='/')
+                else if(c=='/') // Se trovo il carattere che separa la parola dalla regola
                 {
                     reg=true;
                 }
             }
-            if(parola.size()>=2 && carval)
+            if(parola.size()>=4 && carval) // Se la parola ha una lungehzza pari almeno a 4 e tutte le sue lettere sono valide
             {
                 elemento={parola, regole};
-                Dizionario.insert(elemento);
+                Dizionario.insert(elemento); // Inserimento della parola nel dizionario
             }
         }
     }
-    in.close();
+    in.close(); // Chiusura del file
 
-    // Aggiungi tutte le parole di due e tre lettere al dizionario
+    // Aggiungi tutte le parole di due e tre lettere al dizionario (va bene qualsiasi combinazione)
     for(unsigned int prima=1;prima<Sacchetto.size();++prima)
     {
         for(unsigned int seconda=1;seconda<Sacchetto.size();++seconda)
@@ -101,14 +102,14 @@ int LeggiDizionario()
     return 0;
 }
 
-void LeggiRegole()
+void LeggiRegole(multimap<string, regola>& Regole)
 {
-    string presuf, nome, togli, metti, dove;
+    string presuf, nome, togli, metti, dove; // Componenti della regola
     regola regolaSingola;
     pair<string,regola> elemento;
 
     ifstream in ("sc_IT.aff", ifstream::in); // Apri il file delle regole
-    while(in>>presuf>>nome>>togli>>metti>>dove)
+    while(in>>presuf>>nome>>togli>>metti>>dove) // Lettura dei componenti di ogni regola
     {
         regolaSingola.dove=dove;
         regolaSingola.metti=metti;
@@ -121,7 +122,7 @@ void LeggiRegole()
     in.close(); // Chiudi il file delle regole
 }
 
-void EsplodiRegole() // RICONTROLLARE
+void EsplodiRegole(multimap<string, regola>& Regole, multimap<string, regola>& RegoleEsplose) // Suddivisione delle regole semplici in regole più complesse
 {
     bool quadra=false;
     bool chiusa=false;
@@ -246,7 +247,7 @@ void EsplodiRegole() // RICONTROLLARE
 
 }
 
-void ApplicaRegole(multimap<string, regola>& Tipologia)
+void ApplicaRegole(multimap<string, regola>& Tipologia) // Applicazione delle regole al dizionario di base
 {
     string sreg;
     string nuovaparola="";
@@ -346,21 +347,25 @@ void ApplicaRegole(multimap<string, regola>& Tipologia)
                             {
                                 finevalida=true;
 
-                                if(parola.first.length()>elemento->second.dove.length())
+                                if(parola.first.length()>elemento->second.dove.length()) // Se la parola è più lunga della sua fine
                                 {
+
                                     for(unsigned int nf=parola.first.length()-1;nf>=parola.first.length()-elemento->second.dove.length();--nf)
                                     {
-                                        if(parola.first[nf]!=elemento->second.dove[nf-parola.first.length()+elemento->second.dove.length()])
+                                        if(parola.first[nf]!=elemento->second.dove[nf-parola.first.length()+elemento->second.dove.length()]) // confronta lettere
                                         {
                                             finevalida=false;
                                         }
                                     }
+
+
                                 }
                                 else
                                 {
                                     finevalida=false;
                                 }
                             }
+
 
 
 
@@ -539,11 +544,11 @@ void CreaMatriceMP()
 
         for(int c=0;c<iteratore->first.length();++c)
         {
-            if(c<9)
+            if(c<9) // Se la posizione è inferiore a 9 (ovvero indicizzo solo per i primi 8 caratteri della parola)
             {
                 if((int)(tolower(iteratore->first[c]))<97 || (int)(tolower(iteratore->first[c])>122))
                 {
-                    inseribile=false;
+                    inseribile=false; // Se una delle lettere non è nel sacchetto la parola non è valida
                 }
             }
         }
@@ -554,7 +559,7 @@ void CreaMatriceMP()
             {
                 if(c<9)
                 {
-                    MatriceMP[c][(int)(tolower(iteratore->first[c])-97)].push_back(iteratore);
+                    MatriceMP[c][(int)(tolower(iteratore->first[c])-97)].push_back(iteratore); // Inserimento del puntatore alla parola (o meglio, all'elemento della mappa di coppie di stringhe) nella cella corrispondente della matrice
                 }
             }
         }
@@ -562,21 +567,58 @@ void CreaMatriceMP()
 
 }
 
+void EsplodiNegazioni(multimap<string, regola>& RegoleEsplose) // In questo modo alcune delle regole vengono effettivamente sviluppate
+{
+    multimap<string, regola> negazione;
+    for(auto elemento:RegoleEsplose)
+    {
+        if(elemento.second.dove[0]=='^') // Se nelle regole esplose è presente, all'inizio, il simbolo ^
+        {
+            for(int i=0;i<26;++i)
+            {
+                if(i+97!=tolower(elemento.second.dove[1]))
+                {
+                    string stringa;
+                    stringa[0]=(char)(i+97);
+                    for(int j=2;j<elemento.second.dove.length();++j)
+                    {
+                        stringa=stringa+elemento.second.dove[j];
+                    }
+                    regola nuova;
+                    nuova=elemento.second;
+                    nuova.dove=stringa;
+                    pair<string, regola> nuovoel;
+                    nuovoel={elemento.first, nuova};
+                    negazione.insert(nuovoel);
+
+                }
+            }
+        }
+    }
+    RegoleEsplose.insert(negazione.begin(), negazione.end());
+}
+
 void ImpostazioniIniziali()
 {
-    LeggiLettere();
-    OrdinaLettere();
+    // Mappe che contengono le regole
+    multimap <string, regola> Regole; // Contiene le regole iniziali
+    multimap <string, regola> RegoleEsplose; // Contiene le regole iniziali divise in regole più semplici laddove necessario
 
-    InizializzaGriglia();
-    ImpostaLivelli();
+    LeggiLettere(); // Legge le lettere del sacchetto
+    OrdinaLettere(); // Ordina le lettere del sacchetto
 
-    LeggiDizionario();
-    LeggiRegole();
+    InizializzaGriglia(); // Inizializza il contenuto del tabellone
+    ImpostaLivelli(); // Imposta i livelli dei moltiplicatori del tablellone algoritmicamente
 
-    EsplodiRegole();
+    LeggiDizionario(); // Legge il dizionario di base dal filw fornito
+    LeggiRegole(Regole); // Legge le regole di base e le mette nella mappa regole
 
-    ApplicaRegole(RegoleEsplose);
-    CreaMatriceMP();
+    EsplodiRegole(Regole, RegoleEsplose); // Prende le regole complesse e le trasforma in regole semplici
 
+    EsplodiNegazioni(RegoleEsplose); // Sviluppa le negazioni, indicate da ^
 
+    ApplicaRegole(RegoleEsplose); // Applica le regole generate al dizionario di base
+    CreaMatriceMP(); // Crea la matrice che permette di organizzare efficientemente il dizionario ai fini della ricerca
+
+    cout << Dizionario.size() << endl;
 }

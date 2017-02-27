@@ -17,23 +17,6 @@ const int C = 17;
 #define LIV 3
 #define TOTSCA 2
 
-bool prima=true;
-char Jolly[2]={' ',' '};
-int NumeroGiocatori;
-int Giocatore=1;
-
-int punteggiosingolaparola=0;
-
-char sct1=' ';
-char sct2=' ';
-
-// TURNI
-// Gestione dei punteggi
-int PunteggiGiocatori[4]={0,0,0,0};
-
-// Gestione dei leggii
-string Leggii[4]={"        ","        ","        ","        "};
-
 // SACCHETTO
 // Gestione del sacchetto delle lettere
 typedef struct
@@ -58,17 +41,9 @@ typedef struct
     string dove;
 } regola;
 
-// Mappe che contengono le regole
-map <char, string> CombinaRegole;
-multimap <string, regola> Regole;
-multimap <string, regola> RegoleEsplose;
-
 // GRIGLIA
 // Matrice tridimensionale per la rappresentazione della griglia
 char Griglia[R][C][LIV];
-
-// Gestione delle intersezioni
-bool bonusnosc=false;
 
 // MEMORIZZAZIONE DEI DATI DI UNA PAROLA
 typedef struct
@@ -81,10 +56,26 @@ typedef struct
     bool maxdirvert;
 } DatiParola;
 
-DatiParola ParolaMx={"",0,"",0,0,false};
+// INFORMAZIONI SULLA MANO
+typedef struct
+{
+    bool prima=true;
+    char Jolly[2][2]={{' ',' '},{' ',' '}};
+    int NumeroGiocatori;
+    int Giocatore=1;
+    std::string Leggii[4]={"        ","        ","        ","        "};
+    int PunteggiGiocatori[4]={0,0,0,0};
+    DatiParola ParolaMx={"",0,"",0,0,false};
+    int punteggiosingolaparola=0;
+    bool bonusnosc=false;
+
+} Mano;
+
+Mano ManoCorrente;
+
 
 // MEMORIZZAZIONE EFFICIENTE DELLE PAROLE
-vector<map<string, string>::iterator> MatriceMP[26][9];
+vector<map<string, string>::iterator> MatriceMP[9][26];
 
 #include <QMessageBox>
 #include <QPlainTextEdit>

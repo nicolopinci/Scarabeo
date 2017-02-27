@@ -1,53 +1,53 @@
-void GiocatoreSuccessivo()
+void GiocatoreSuccessivo() // Permette di passare al giocatore successivo. Varia a seconda del numero di giocatori presenti
 {
-    if(Giocatore==1)
+    if(ManoCorrente.Giocatore==1)
     {
-        Giocatore=2;
+        ManoCorrente.Giocatore=2;
     }
-    else if(Giocatore==2)
+    else if(ManoCorrente.Giocatore==2)
     {
-        if(NumeroGiocatori==2)
+        if(ManoCorrente.NumeroGiocatori==2)
         {
-            Giocatore=1;
+            ManoCorrente.Giocatore=1;
         }
         else
         {
-            Giocatore=3;
+            ManoCorrente.Giocatore=3;
         }
     }
-    else if(Giocatore==3)
+    else if(ManoCorrente.Giocatore==3)
     {
-        if(NumeroGiocatori==3)
+        if(ManoCorrente.NumeroGiocatori==3)
         {
-            Giocatore=1;
+            ManoCorrente.Giocatore=1;
         }
         else
         {
-            Giocatore=4;
+            ManoCorrente.Giocatore=4;
         }
     }
-    else if(Giocatore==4)
+    else if(ManoCorrente.Giocatore==4)
     {
-        Giocatore=1;
+        ManoCorrente.Giocatore=1;
     }
 }
 
-void RiempiLeggioCorrente(string &LeggioProvvisorio)
+void RiempiLeggioCorrente(string &LeggioProvvisorio) // Riempie il leggio del giocatore corrente
 {
 
-    RiempiLeggio(Leggii[Giocatore-1]);
-    LeggioProvvisorio=Leggii[Giocatore-1];
+    RiempiLeggio(ManoCorrente.Leggii[ManoCorrente.Giocatore-1]);
+    LeggioProvvisorio=ManoCorrente.Leggii[ManoCorrente.Giocatore-1];
 
 }
 
-void RisincronizzaLeggii(string LeggioProvvisorio)
+void RisincronizzaLeggii(string LeggioProvvisorio) // Una volta usate le lettere del leggio provvisorio, il leggio del giocatore considerato diventa uguale al leggio provvisorio
 {
 
-    Leggii[Giocatore-1]=LeggioProvvisorio;
+    ManoCorrente.Leggii[ManoCorrente.Giocatore-1]=LeggioProvvisorio;
 
 }
 
-bool ParolaEsiste(string parola, map<string, string>& Diz)
+bool ParolaEsiste(string parola, map<string, string>& Diz) // Controlla se la parola esiste. I caratteri della stringa in ingresso vengono resi minuscoli
 {
     for(auto &c:parola)
     {
@@ -228,9 +228,9 @@ void InserisciSuggerimento(int r, int c, string parola, bool vert, string &Leggi
 
 void ParolaMassimaMaiuscola()
 {
-    for(unsigned int car=0;car<ParolaMx.parola.length();++car)
+    for(unsigned int car=0;car<ManoCorrente.ParolaMx.parola.length();++car)
     {
-        ParolaMx.parola[car]=toupper(ParolaMx.parola[car]);
+        ManoCorrente.ParolaMx.parola[car]=toupper(ManoCorrente.ParolaMx.parola[car]);
     }
 }
 
@@ -462,7 +462,7 @@ void PuntiParola(string parola, int colonnabottone, int rigabottone, int &punti,
     {
         // Calcolo il suo punteggio
         int moltiplica=1;
-        punteggiosingolaparola=0;
+        ManoCorrente.punteggiosingolaparola=0;
 
         // Punteggio della parola principale
         for(unsigned int scorrimento=colonnabottone;scorrimento<colonnabottone+parola.length();++scorrimento)
@@ -494,7 +494,7 @@ void PuntiParola(string parola, int colonnabottone, int rigabottone, int &punti,
     {
         // Calcolo il suo punteggio
         int moltiplica=1;
-        punteggiosingolaparola=0;
+        ManoCorrente.punteggiosingolaparola=0;
 
         // Punteggio della parola principale
         for(unsigned int scorrimento=rigabottone;scorrimento<rigabottone+parola.length();++scorrimento)

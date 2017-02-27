@@ -12,7 +12,7 @@ int InizializzaGriglia()
     return 0;
 }
 
-int ImpostaLivelli()
+int ImpostaLivelli() // Imposta algortmicamente i moltiplicatori. Se si estende la griglia vengono mantenute le proporzioni fra le posizioni dei moltiplicatori
 {
     //  Moltiplicatori di lettere singole
     for(unsigned int r=0;r<R;++r)
@@ -46,17 +46,17 @@ void FinestraPrincipale::VisualizzaScarabei()
 
     // Visualizzazione degli scarabei
 
-    if(Jolly[0]!=' ')
+    if(ManoCorrente.Jolly[0][0]!=' ')
     {
         QString ScarA="";
-        ScarA=ScarA+Jolly[0];
+        ScarA=ScarA+ManoCorrente.Jolly[0][0];
         ui->Scar1->setText(ScarA);
     }
 
-    if(Jolly[1]!=' ')
+    if(ManoCorrente.Jolly[0][1]!=' ')
     {
         QString ScarB="";
-        ScarB=ScarB+Jolly[1];
+        ScarB=ScarB+ManoCorrente.Jolly[0][1];
         ui->Scar2->setText(ScarB);
     }
 }

@@ -1,5 +1,8 @@
 void GeneraParoleComplete(string stringa, map<string, int>& ParolePossibili)
 {
+    /* Generazione di tutte le parole possibili (riferito alla prima parola)
+     * in base alle combinazioni di lettere che si possono formare con le lettere del leggio */
+
     string sottostringa;
     sort(stringa.begin(), stringa.end());
     pair<string,int> elemento;
@@ -15,13 +18,13 @@ void GeneraParoleComplete(string stringa, map<string, int>& ParolePossibili)
                 sottostringa=sottostringa+stringa[j];
                 if(stringa[j]=='#')
                 {
-                    ++scarabeo;
+                    ++scarabeo; // Numero di scarabei (o jolly) presenti sul leggio
                 }
 
             }
             if(scarabeo==0)
             {
-                if(sottostringa.length()<=3 || (ParolaEsiste(sottostringa, Dizionario)))
+                if(sottostringa.length()<=3 || (ParolaEsiste(sottostringa, Dizionario))) // Controlla se la parola esiste solo nel caso in cui sia più lunga di tre lettere
                 {
                     elemento={sottostringa, scarabeo};
                     ParolePossibili.insert(elemento);
@@ -35,7 +38,7 @@ void GeneraParoleComplete(string stringa, map<string, int>& ParolePossibili)
 
         }
     }
-    while(next_permutation(stringa.begin(), stringa.end()));
+    while(next_permutation(stringa.begin(), stringa.end())); // Funzione STL
 }
 
 void SvuotaPossibili(map<string, int>& ParolePossibili)
@@ -49,8 +52,6 @@ void SvuotaPossibili(map<string, int>& ParolePossibili)
     }
 }
 
-
-
 void TrovaPrimaMigliore(map<string, int>& ParolePossibili)
 {
     int punti=0;
@@ -58,7 +59,7 @@ void TrovaPrimaMigliore(map<string, int>& ParolePossibili)
     int moltiplicatore=1;
     int partenza=0;
 
-    ParolaMx.punteggio=0;
+    ManoCorrente.ParolaMx.punteggio=0;
 
     for(auto p:ParolePossibili) // Per ogni parola
     {
@@ -82,6 +83,8 @@ void TrovaPrimaMigliore(map<string, int>& ParolePossibili)
                 {
                     punti=punti+ValoreLettera(p.first[l-i], Sacchetto);
                 }
+
+                // Non ho considerato i moltiplicatori di parola perché la prima parola non può passare sopra di essi
             }
             punti=punti*moltiplicatore;
             if(p.first.length()==6)
@@ -96,7 +99,7 @@ void TrovaPrimaMigliore(map<string, int>& ParolePossibili)
             {
                 punti=punti+50;
             }
-            if(p.first=="SCARABEO" || p.first=="SCARABEI")
+            if(p.first=="SCARABEO" || p.first=="SCARABEI" || p.first=="scarabeo" || p.first=="scarabei")
             {
                 punti=punti+100;
             }
@@ -104,11 +107,11 @@ void TrovaPrimaMigliore(map<string, int>& ParolePossibili)
             {
                 punti=punti+10;
             }
-            if(punti>ParolaMx.punteggio)
+            if(punti>ManoCorrente.ParolaMx.punteggio)
             {
-                ParolaMx.punteggio=punti;
-                ParolaMx.parola=p.first;
-                ParolaMx.colonna=i;
+                ManoCorrente.ParolaMx.punteggio=punti;
+                ManoCorrente.ParolaMx.parola=p.first;
+                ManoCorrente.ParolaMx.colonna=i;
             }
 
 
@@ -137,6 +140,7 @@ void EliminaScarabei(map<string, int>& ParolePossibili)
 
 void EsplodiScarabei(map<string, int>& ParolePossibili)
 {
+    // Generazione delle parole possibili se nel leggio (della prima parola) sono presenti dei jolly
     pair<string, int> elemento;
     string nuovaparola;
     bool primo=true;
@@ -209,7 +213,6 @@ void EsplodiScarabei(map<string, int>& ParolePossibili)
 void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParola &Correnti)
 {
 
-
     int punteggiomax=0; // Punteggio della parola migliore
 
 
@@ -229,27 +232,28 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParo
     string strutturaparola="";
     bool accettabile=false;
     string lettereeffettive="";
-    string CopiaLeggio;
+    string CopiaLeggio="";
 
     int primaletterapos=0;
-    int primalettera= ' ';
+    char primalettera= ' ';
 
 
-    for(int c=0;c<17;++c)
+    for(int c=0;c<17;++c) // Per ogni colonna della matrice
     {
-        for(int r=rmin;r<rmax;++r)
+
+        for(int r=rmin;r<rmax;++r) // Per ogni riga della matrice
         {
 
-            if(c==0 || (c>0 && Griglia[r][c-1][0]==' ' && c!=16))
+            if(c==0 || (c>0 && Griglia[r][c-1][0]==' ' && c!=16)) // Se sono al limite sinistro oppure se nella cella immediatamente precedente non ci sono lettere
             {
-                for(int spazitot=1;spazitot<=LETTDISP;++spazitot)
+                for(int spazitot=1;spazitot<=LETTDISP;++spazitot) // Per un numero di spazi variabile tra 1 e 8
                 {
                     cc=c;
                     numerospazi=0;
-                    strutturaparola="";
+                    strutturaparola=""; // La struttura della parola è costituita dai caratteri presenti sulla griglia e si estende fintanto che non si è raggiunto il limite della griglia oppure il numero di spazi massimi possibili indicati
 
-                    primalettera=' ';
-                    primaletterapos=0;
+                    primalettera=' '; // Primo elemento della struttura a essere un non-spazio
+                    primaletterapos=0; // Posizione del primo elemento della struttura che non è uno spazio
 
                     while(cc<17 && numerospazi<spazitot) // Vai avanti fintanto che ci sono degli spazi
                     {
@@ -259,7 +263,7 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParo
                         }
                         else
                         {
-                            if((unsigned int)numerospazi==strutturaparola.length())
+                            if(numerospazi==strutturaparola.length()) // Se prima ci sono solo spazi
                             {
                                 primaletterapos=numerospazi;
                                 primalettera=Griglia[r][cc][0];
@@ -268,7 +272,6 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParo
 
                         strutturaparola=strutturaparola+Griglia[r][cc][0];
 
-
                         ++cc;
                     }
 
@@ -276,253 +279,258 @@ void SuggerimentiGenericiOrizzontali(string Leggio, int rmin, int rmax, DatiParo
                     while(cc<17 && Griglia[r][cc][0]!=' ') // Finché dopo lo spazio ci sono altre lettere da aggiungere
                     {
                         strutturaparola=strutturaparola+Griglia[r][cc][0];
+                        if(primalettera==' ') // Se non ho ancora incontrato una lettera
+                        {
+                            primalettera=Griglia[r][cc][0]; // Adesso l'ho trovata ...
+                            primaletterapos=numerospazi; // ... e questa è la sua posizione
+                        }
                         ++cc;
                     }
 
-
-
-
-                    if(strutturaparola.length()!=(unsigned int)numerospazi)
+                    if(strutturaparola.length()!=numerospazi) // Se la struttura non è formata soltanto da spazi
                     {
-                        for(auto itera:MatriceMP[primaletterapos][(int)(tolower(primalettera)-'a')])
+                        if(tolower(primalettera)<=122 && tolower(primalettera)>=97) // Se la lettera esiste
                         {
-
-                            string parola=itera->first;
-                            accettabile=false;
-                            if(parola.length()==strutturaparola.length())
+                            for(auto itera:MatriceMP[primaletterapos][(int)(tolower(primalettera)-97)]) // Trova la cella corrispondente nella matrice di vector di iteratori di mappe di coppie di stringhe
                             {
+                                string parola=itera->first; // Questa è la parola puntata
 
-                                accettabile=true;
-                                unsigned int lettera=0;
-
-                                while(accettabile && lettera<parola.length())
-                                {
-                                    if(strutturaparola[lettera]!=' ' && tolower(parola[lettera])!=tolower(strutturaparola[lettera]))
-                                    {
-                                        accettabile=false;
-                                    }
-                                    ++lettera;
-
-                                }
-
-                                if(accettabile) // Se posso mettere quella parola negli spazi della struttura
+                                accettabile=false;
+                                if(parola.length()==strutturaparola.length()) // Se è lunga quanto la struttura
                                 {
 
-                                    // Verifico che ci siano le lettere nel leggio
-                                    lettereeffettive="";
-                                    for(unsigned int lettera=0;lettera<parola.length();++lettera)
+                                    accettabile=true;
+                                    unsigned int lettera=0;
+
+                                    while(accettabile && lettera<parola.length())
                                     {
-                                        // Se struttura e parola corrispondono in un punto non ho bisogno di quella lettera
-                                        if(tolower(strutturaparola[lettera])!=tolower(parola[lettera]))
+                                        if(strutturaparola[lettera]!=' ' && tolower(parola[lettera])!=tolower(strutturaparola[lettera])) // Se non coincide con il carattere presente nella struttura
                                         {
-                                            lettereeffettive=lettereeffettive+parola[lettera];
+                                            accettabile=false;
                                         }
+                                        ++lettera;
+
                                     }
 
-
-                                    if(lettereeffettive!="")
+                                    if(accettabile) // Se posso mettere quella parola negli spazi della struttura
                                     {
 
-                                        if(CopiaLeggio!=Leggio)
+                                        // Verifico che ci siano le lettere nel leggio
+                                        lettereeffettive="";
+                                        for(unsigned int lettera=0;lettera<parola.length();++lettera)
                                         {
-                                            CopiaLeggio=Leggio;
+                                            // Se struttura e parola corrispondono in un punto non ho bisogno di quella lettera
+                                            if(tolower(strutturaparola[lettera])!=tolower(parola[lettera]))
+                                            {
+                                                lettereeffettive=lettereeffettive+parola[lettera];
+                                            }
                                         }
 
 
-                                        contamancanti=0;
-                                        int letteranecessaria=0;
-                                        while((unsigned int)letteranecessaria<lettereeffettive.length() && contamancanti<=2)
+                                        if(lettereeffettive!="")
                                         {
-                                            bool trovato=false;
-                                            int letteraleggio=0;
-                                            while(!trovato && letteraleggio<LETTDISP)
-                                            {
-                                                if(tolower(lettereeffettive[letteranecessaria])==tolower(CopiaLeggio[letteraleggio]) && !trovato)
-                                                {
-                                                    CopiaLeggio[letteraleggio]=' ';
-                                                    trovato=true;
-                                                }
-                                                ++letteraleggio;
 
-                                            }
-                                            if(!trovato)
+                                            if(CopiaLeggio!=Leggio)
                                             {
-                                                ++contamancanti;
+                                                CopiaLeggio=Leggio;
                                             }
-                                            ++letteranecessaria;
-                                        }
 
-                                        // Conto gli scarabei
-                                        numeroscarabei=0;
-                                        int nsc=0;
-                                        while((unsigned int)nsc<CopiaLeggio.length() && numeroscarabei<=2)
-                                        {
-                                            if(CopiaLeggio[nsc]=='#')
+                                            // Se non ho tutte le lettere provo a vedere se posso utilizzare degli scarabei (se ci sono sul mio leggio)
+                                            contamancanti=0;
+                                            int letteranecessaria=0;
+                                            while((unsigned int)letteranecessaria<lettereeffettive.length() && contamancanti<=2)
                                             {
-                                                ++numeroscarabei;
-                                            }
-                                            ++nsc;
-                                        }
-
-                                        if(contamancanti==0 || (contamancanti==1 && numeroscarabei>=1) || (contamancanti==2 && numeroscarabei==2))
-                                        {
-                                            // Se ci sono gli scarabei li elimino (q.b.)
-                                            if(numeroscarabei==1)
-                                            {
-                                                int nsc=0;
-                                                while(CopiaLeggio[nsc]!='#')
+                                                bool trovato=false;
+                                                int letteraleggio=0;
+                                                while(!trovato && letteraleggio<LETTDISP)
                                                 {
-                                                    ++nsc;
-                                                }
-                                                CopiaLeggio[nsc]=' ';
-                                            }
-                                            else if(numeroscarabei==2)
-                                            {
-                                                int nsc=0;
-                                                int contasc=0;
-                                                while((unsigned int)nsc<CopiaLeggio.length() && contasc<2)
-                                                {
-                                                    if(CopiaLeggio[nsc]=='#')
+                                                    if(tolower(lettereeffettive[letteranecessaria])==tolower(CopiaLeggio[letteraleggio]) && !trovato)
                                                     {
-                                                        CopiaLeggio[nsc]=' ';
-                                                        ++contasc;
+                                                        CopiaLeggio[letteraleggio]=' ';
+                                                        trovato=true;
                                                     }
-                                                    ++nsc;
+                                                    ++letteraleggio;
+
                                                 }
+                                                if(!trovato)
+                                                {
+                                                    ++contamancanti;
+                                                }
+                                                ++letteranecessaria;
                                             }
 
-
-
-                                            // Vedo se ci sono intersezioni e le scorro per vedere se esistono
-
-                                            intersezionivalide=true;
-
-                                            cc=c;
-
-                                            while(intersezionivalide && cc<c+(int)parola.length())
+                                            // Conto gli scarabei
+                                            numeroscarabei=0;
+                                            int nsc=0;
+                                            while((unsigned int)nsc<CopiaLeggio.length() && numeroscarabei<=2)
                                             {
-                                                scorriperpendicolare=r;
-
-                                                // Vai fino all'inizio dell'intersezione
-                                                if(scorriperpendicolare!=0) // Non sono già al limite del tabellone
+                                                if(CopiaLeggio[nsc]=='#')
                                                 {
-                                                    --scorriperpendicolare;
-                                                    while(scorriperpendicolare>=0 && Griglia[scorriperpendicolare][cc][0]!=' ')
+                                                    ++numeroscarabei;
+                                                }
+                                                ++nsc;
+                                            }
+
+                                            if(contamancanti==0 || (contamancanti==1 && numeroscarabei>=1) || (contamancanti==2 && numeroscarabei==2))
+                                            {
+                                                // Se ci sono gli scarabei li elimino (q.b.)
+                                                if(numeroscarabei==1)
+                                                {
+                                                    int nsc=0;
+                                                    while(CopiaLeggio[nsc]!='#')
+                                                    {
+                                                        ++nsc;
+                                                    }
+                                                    CopiaLeggio[nsc]=' ';
+                                                }
+                                                else if(numeroscarabei==2)
+                                                {
+                                                    int nsc=0;
+                                                    int contasc=0;
+                                                    while((unsigned int)nsc<CopiaLeggio.length() && contasc<2)
+                                                    {
+                                                        if(CopiaLeggio[nsc]=='#')
+                                                        {
+                                                            CopiaLeggio[nsc]=' ';
+                                                            ++contasc;
+                                                        }
+                                                        ++nsc;
+                                                    }
+                                                }
+
+
+
+                                                // Vedo se ci sono intersezioni e le scorro per vedere se esistono
+
+                                                intersezionivalide=true;
+
+                                                cc=c;
+
+                                                while(intersezionivalide && cc<c+(int)parola.length())
+                                                {
+                                                    scorriperpendicolare=r;
+
+                                                    // Vai fino all'inizio dell'intersezione
+                                                    if(scorriperpendicolare!=0) // Non sono già al limite del tabellone
                                                     {
                                                         --scorriperpendicolare;
+                                                        while(scorriperpendicolare>=0 && Griglia[scorriperpendicolare][cc][0]!=' ')
+                                                        {
+                                                            --scorriperpendicolare;
+                                                        }
+                                                        ++scorriperpendicolare;
                                                     }
-                                                    ++scorriperpendicolare;
+
+                                                    // Scorri tutta la parola
+                                                    stringaperpendicolare="";
+                                                    while((scorriperpendicolare<17 && Griglia[scorriperpendicolare][cc][0]!=' ') || scorriperpendicolare==r)
+                                                    {
+                                                        if(scorriperpendicolare==r)
+                                                        {
+                                                            stringaperpendicolare=stringaperpendicolare+parola[cc-c];
+                                                        }
+                                                        else
+                                                        {
+                                                            stringaperpendicolare=stringaperpendicolare+Griglia[scorriperpendicolare][cc][0];
+                                                        }
+                                                        ++scorriperpendicolare;
+                                                    }
+
+
+                                                    // Vedi se la parola esiste
+                                                    if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, Dizionario))
+                                                    {
+                                                        if(Griglia[r][cc][0]==' ')
+                                                        {
+                                                            intersezionivalide=false;
+                                                        }
+                                                    }
+
+                                                    ++cc;
+
                                                 }
 
-                                                // Scorri tutta la parola
-                                                stringaperpendicolare="";
-                                                while((scorriperpendicolare<17 && Griglia[scorriperpendicolare][cc][0]!=' ') || scorriperpendicolare==r)
+                                                // Se tutte le intersezioni sono valide
+                                                if(intersezionivalide)
                                                 {
-                                                    if(scorriperpendicolare==r)
+                                                    pp=0;
+                                                    ps=0;
+                                                    mp=1;
+                                                    ms=1;
+
+                                                    // Calcola il punteggio della parola principale
+                                                    for(unsigned int l=0;l<parola.length();++l) // Per ogni lettera della parola
                                                     {
-                                                        stringaperpendicolare=stringaperpendicolare+parola[cc-c];
+                                                        if(Griglia[r][c+l][1]==' ' )
+                                                        {
+                                                            pp+=ValoreLettera(parola[l], Sacchetto);
+                                                        }
+                                                        if(Griglia[r][c+l][1]=='2')
+                                                        {
+                                                            pp=pp+2*ValoreLettera(parola[l], Sacchetto);
+                                                        }
+                                                        else if(Griglia[r][c+l][1]=='3')
+                                                        {
+                                                            pp=pp+3*ValoreLettera(parola[l], Sacchetto);
+                                                        }
+
+                                                        if(Griglia[r][c+l][2]=='3')
+                                                        {
+                                                            mp=mp*3;
+                                                        }
+                                                        else if(Griglia[r][c+l][2]=='2')
+                                                        {
+                                                            mp=mp*2;
+                                                        }
                                                     }
-                                                    else
+
+                                                    pp=pp*mp;
+
+                                                    PuntiIntersezioni(parola, r, c, pp, true, Sacchetto); // Intersezioni verticali
+
+                                                    // Aggiungi eventuale bonus lettere (-> lettereeffettive.size())
+                                                    if(lettereeffettive.size()==6)
                                                     {
-                                                        stringaperpendicolare=stringaperpendicolare+Griglia[scorriperpendicolare][cc][0];
+                                                        pp+=10;
                                                     }
-                                                    ++scorriperpendicolare;
+                                                    else if(lettereeffettive.size()==7)
+                                                    {
+                                                        pp+=30;
+                                                    }
+                                                    else if(lettereeffettive.size()==8)
+                                                    {
+                                                        pp+=50;
+                                                    }
+
+                                                    // Aggiungi eventuale bonus jolly (->numeroscarabei==0)
+                                                    if(numeroscarabei==0)
+                                                    {
+                                                        pp+=10;
+                                                    }
+
+                                                    if(pp>punteggiomax) // Se il mio punteggio è più alto rispetto a quello della parola con punteggio maggiore trovata fino ad ora divento la parola migliore (per adesso)
+                                                    {
+                                                        Correnti.parola=parola;
+                                                        Correnti.punteggio=pp;
+                                                        Correnti.LeggioR=CopiaLeggio;
+                                                        Correnti.riga=r;
+                                                        Correnti.colonna=c;
+                                                        Correnti.maxdirvert=false;
+
+                                                        punteggiomax=pp;
+
+
+                                                    }
+
+
                                                 }
-
-
-                                                // Vedi se la parola esiste
-                                                if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, Dizionario))
-                                                {
-                                                    if(Griglia[r][cc][0]==' ')
-                                                    {
-                                                        intersezionivalide=false;
-                                                    }
-                                                }
-
-                                                ++cc;
-
                                             }
 
-                                            // Se tutte le intersezioni sono valide
-                                            if(intersezionivalide)
-                                            {
-                                                pp=0;
-                                                ps=0;
-                                                mp=1;
-                                                ms=1;
-
-                                                // Calcola il punteggio della parola principale
-                                                for(unsigned int l=0;l<parola.length();++l) // Per ogni lettera della parola
-                                                {
-                                                    if(Griglia[r][c+l][1]==' ' )
-                                                    {
-                                                        pp+=ValoreLettera(parola[l], Sacchetto);
-                                                    }
-                                                    if(Griglia[r][c+l][1]=='2')
-                                                    {
-                                                        pp=pp+2*ValoreLettera(parola[l], Sacchetto);
-                                                    }
-                                                    else if(Griglia[r][c+l][1]=='3')
-                                                    {
-                                                        pp=pp+3*ValoreLettera(parola[l], Sacchetto);
-                                                    }
-
-                                                    if(Griglia[r][c+l][2]=='3')
-                                                    {
-                                                        mp=mp*3;
-                                                    }
-                                                    else if(Griglia[r][c+l][2]=='2')
-                                                    {
-                                                        mp=mp*2;
-                                                    }
-                                                }
-
-                                                pp=pp*mp;
-
-                                                PuntiIntersezioni(parola, r, c, pp, true, Sacchetto); // Intersezioni verticali
-
-                                                // Aggiungi eventuale bonus lettere (-> lettereeffettive.size())
-                                                if(lettereeffettive.size()==6)
-                                                {
-                                                    pp+=10;
-                                                }
-                                                else if(lettereeffettive.size()==7)
-                                                {
-                                                    pp+=30;
-                                                }
-                                                else if(lettereeffettive.size()==8)
-                                                {
-                                                    pp+=50;
-                                                }
-
-                                                // Aggiungi eventuale bonus jolly (->numeroscarabei==0)
-                                                if(numeroscarabei==0)
-                                                {
-                                                    pp+=10;
-                                                }
-
-                                                if(pp>punteggiomax)
-                                                {
-                                                    Correnti.parola=parola;
-                                                    Correnti.punteggio=pp;
-                                                    Correnti.LeggioR=CopiaLeggio;
-                                                    Correnti.riga=r;
-                                                    Correnti.colonna=c;
-                                                    Correnti.maxdirvert=false;
-
-                                                    punteggiomax=pp;
-
-
-                                                }
-
-
-                                            }
                                         }
-
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
 
@@ -552,7 +560,7 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, DatiParola
     int ps=0;
     int mp=1;
     int ms=1;
-    string CopiaLeggio;
+    string CopiaLeggio="";
     int primaletterapos=0;
     char primalettera=' ';
 
@@ -561,9 +569,9 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, DatiParola
     string lettereeffettive="";
 
     // Genera tutte le sottostrutture di minimo 2 celle (PAROLE VERTICALI)
-    for(int r=rmin; r<rmax; ++r)
+    for(int r=0; r<17; ++r)
     {
-        for(int c=0;c<17;++c)
+        for(int c=rmin;c<rmax;++c)
         {
             if(r==0 || (r>0 && Griglia[r-1][c][0]==' ' && r!=16))
             {
@@ -602,351 +610,364 @@ void SuggerimentiGenericiVerticali(string Leggio, int rmin, int rmax, DatiParola
                     while(rc<17 && Griglia[rc][c][0]!=' ') // Finché dopo lo spazio ci sono altre lettere da aggiungere
                     {
                         strutturaparola=strutturaparola+Griglia[rc][c][0];
+                        if(primalettera==' ')
+                        {
+                            primalettera=Griglia[rc][c][0];
+                            primaletterapos=numerospazi;
+                        }
                         ++rc;
                     }
+
 
                     if(strutturaparola.length()!=(unsigned int)numerospazi)
                     {
 
-                        for(auto itera:MatriceMP[primaletterapos][(int)(tolower(primalettera)-'a')])
+
+
+                        if(tolower(primalettera)<=122 && tolower(primalettera)>=97)
                         {
 
-                            string parola=itera->first;
 
-                            accettabile=false;
-                            if(parola.size()==strutturaparola.length())
+                            for(auto itera:MatriceMP[primaletterapos][(int)(tolower(primalettera)-97)])
                             {
 
-                                accettabile=true;
-                                unsigned int lettera=0;
+                                string parola=itera->first;
 
-                                while(accettabile && lettera<parola.length())
-                                {
-                                    if(strutturaparola[lettera]!=' ' && tolower(parola[lettera])!=tolower(strutturaparola[lettera]))
-                                    {
-                                        accettabile=false;
-                                    }
-                                    ++lettera;
-
-                                }
-
-                                if(accettabile) // Se posso mettere quella parola negli spazi della struttura
+                                accettabile=false;
+                                if(parola.size()==strutturaparola.length())
                                 {
 
+                                    accettabile=true;
+                                    unsigned int lettera=0;
 
-                                    // Verifico che ci siano le lettere nel leggio
-                                    lettereeffettive="";
-                                    for(unsigned int lettera=0;lettera<parola.length();++lettera)
+                                    while(accettabile && lettera<parola.length())
                                     {
-                                        // Se struttura e parola corrispondono in un punto non ho bisogno di quella lettera
-                                        if(tolower(strutturaparola[lettera])!=tolower(parola[lettera]))
+                                        if(strutturaparola[lettera]!=' ' && tolower(parola[lettera])!=tolower(strutturaparola[lettera]))
                                         {
-                                            lettereeffettive=lettereeffettive+parola[lettera];
+                                            accettabile=false;
                                         }
+                                        ++lettera;
+
                                     }
 
-
-                                    if(lettereeffettive!="")
+                                    if(accettabile) // Se posso mettere quella parola negli spazi della struttura
                                     {
 
-                                        if(CopiaLeggio!=Leggio)
+
+                                        // Verifico che ci siano le lettere nel leggio
+                                        lettereeffettive="";
+                                        for(unsigned int lettera=0;lettera<parola.length();++lettera)
                                         {
-                                            CopiaLeggio=Leggio;
+                                            // Se struttura e parola corrispondono in un punto non ho bisogno di quella lettera
+                                            if(tolower(strutturaparola[lettera])!=tolower(parola[lettera]))
+                                            {
+                                                lettereeffettive=lettereeffettive+parola[lettera];
+                                            }
                                         }
 
 
-                                        contamancanti=0;
-                                        int letteranecessaria=0;
-                                        while((unsigned int)letteranecessaria<lettereeffettive.length() && contamancanti<=2)
+                                        if(lettereeffettive!="")
                                         {
-                                            bool trovato=false;
-                                            int letteraleggio=0;
-                                            while(!trovato && letteraleggio<LETTDISP)
-                                            {
-                                                if(tolower(lettereeffettive[letteranecessaria])==tolower(CopiaLeggio[letteraleggio]) && !trovato)
-                                                {
-                                                    CopiaLeggio[letteraleggio]=' ';
-                                                    trovato=true;
-                                                }
-                                                ++letteraleggio;
 
-                                            }
-                                            if(!trovato)
+                                            if(CopiaLeggio!=Leggio)
                                             {
-                                                ++contamancanti;
+                                                CopiaLeggio=Leggio;
                                             }
-                                            ++letteranecessaria;
-                                        }
 
-                                        // Conto gli scarabei
-                                        numeroscarabei=0;
-                                        int nsc=0;
-                                        while((unsigned int)nsc<CopiaLeggio.length() && numeroscarabei<=2)
-                                        {
-                                            if(CopiaLeggio[nsc]=='#')
+
+                                            contamancanti=0;
+                                            int letteranecessaria=0;
+                                            while((unsigned int)letteranecessaria<lettereeffettive.length() && contamancanti<=2)
                                             {
-                                                ++numeroscarabei;
-                                            }
-                                            ++nsc;
-                                        }
-                                        if(contamancanti==0 || (contamancanti==1 && numeroscarabei>=1) || (contamancanti==2 && numeroscarabei==2))
-                                        {
-                                            // Se ci sono gli scarabei li elimino (q.b.)
-                                            if(numeroscarabei==1)
-                                            {
-                                                int nsc=0;
-                                                while(CopiaLeggio[nsc]!='#')
+                                                bool trovato=false;
+                                                int letteraleggio=0;
+                                                while(!trovato && letteraleggio<LETTDISP)
                                                 {
-                                                    ++nsc;
-                                                }
-                                                CopiaLeggio[nsc]=' ';
-                                            }
-                                            else if(numeroscarabei==2)
-                                            {
-                                                int nsc=0;
-                                                int contasc=0;
-                                                while(contasc<2 && (unsigned int)nsc<CopiaLeggio.length())
-                                                {
-                                                    if(CopiaLeggio[nsc]=='#')
+                                                    if(tolower(lettereeffettive[letteranecessaria])==tolower(CopiaLeggio[letteraleggio]) && !trovato)
                                                     {
-                                                        CopiaLeggio[nsc]=' ';
-                                                        ++contasc;
+                                                        CopiaLeggio[letteraleggio]=' ';
+                                                        trovato=true;
                                                     }
-                                                    ++nsc;
+                                                    ++letteraleggio;
+
                                                 }
+                                                if(!trovato)
+                                                {
+                                                    ++contamancanti;
+                                                }
+                                                ++letteranecessaria;
                                             }
 
-                                            // Vedo se ci sono intersezioni e le scorro per vedere se esistono
-
-                                            intersezionivalide=true;
-
-                                            rc=r;
-
-                                            while(intersezionivalide && rc<r+(int)parola.length())
+                                            // Conto gli scarabei
+                                            numeroscarabei=0;
+                                            int nsc=0;
+                                            while((unsigned int)nsc<CopiaLeggio.length() && numeroscarabei<=2)
                                             {
-                                                scorriperpendicolare=c;
-
-                                                // Vai fino all'inizio dell'intersezione
-                                                if(scorriperpendicolare!=0) // Non sono già al limite del tabellone
+                                                if(CopiaLeggio[nsc]=='#')
                                                 {
-                                                    --scorriperpendicolare;
-                                                    while(scorriperpendicolare>=0 && Griglia[rc][scorriperpendicolare][0]!=' ')
+                                                    ++numeroscarabei;
+                                                }
+                                                ++nsc;
+                                            }
+                                            if(contamancanti==0 || (contamancanti==1 && numeroscarabei>=1) || (contamancanti==2 && numeroscarabei==2))
+                                            {
+                                                // Se ci sono gli scarabei li elimino (q.b.)
+                                                if(numeroscarabei==1)
+                                                {
+                                                    int nsc=0;
+                                                    while(CopiaLeggio[nsc]!='#')
+                                                    {
+                                                        ++nsc;
+                                                    }
+                                                    CopiaLeggio[nsc]=' ';
+                                                }
+                                                else if(numeroscarabei==2)
+                                                {
+                                                    int nsc=0;
+                                                    int contasc=0;
+                                                    while(contasc<2 && (unsigned int)nsc<CopiaLeggio.length())
+                                                    {
+                                                        if(CopiaLeggio[nsc]=='#')
+                                                        {
+                                                            CopiaLeggio[nsc]=' ';
+                                                            ++contasc;
+                                                        }
+                                                        ++nsc;
+                                                    }
+                                                }
+
+                                                // Vedo se ci sono intersezioni e le scorro per vedere se esistono
+
+                                                intersezionivalide=true;
+
+                                                rc=r;
+
+                                                while(intersezionivalide && rc<r+(int)parola.length())
+                                                {
+                                                    scorriperpendicolare=c;
+
+                                                    // Vai fino all'inizio dell'intersezione
+                                                    if(scorriperpendicolare!=0) // Non sono già al limite del tabellone
                                                     {
                                                         --scorriperpendicolare;
-                                                    }
-                                                    ++scorriperpendicolare;
-                                                }
-
-                                                // Scorri tutta la parola
-                                                stringaperpendicolare="";
-                                                while((scorriperpendicolare<C && Griglia[rc][scorriperpendicolare][0]!=' ') || scorriperpendicolare==c)
-                                                {
-                                                    if(scorriperpendicolare==c)
-                                                    {
-                                                        stringaperpendicolare=stringaperpendicolare+parola[rc-r];
-                                                    }
-                                                    else
-                                                    {
-                                                        stringaperpendicolare=stringaperpendicolare+Griglia[rc][scorriperpendicolare][0];
-                                                    }
-                                                    ++scorriperpendicolare;
-                                                }
-
-                                                // Vedi se la parola esiste
-                                                if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, Dizionario))
-                                                {
-                                                    if(Griglia[rc][c][0]==' ')
-                                                    {
-                                                        intersezionivalide=false;
-                                                    }
-                                                }
-
-
-                                                ++rc;
-
-                                            }
-
-                                            // Se tutte le intersezioni sono valide
-                                            if(intersezionivalide)
-                                            {
-                                                pp=0;
-                                                ps=0;
-                                                mp=1;
-                                                ms=1;
-
-                                                // Calcola il punteggio della parola principale
-                                                for(unsigned int l=0;l<parola.length();++l) // Per ogni lettera della parola
-                                                {
-                                                    if(Griglia[r+l][c][1]==' ')
-                                                    {
-                                                        pp+=ValoreLettera(parola[l], Sacchetto);
-                                                    }
-                                                    if(Griglia[r+l][c][1]=='2')
-                                                    {
-                                                        pp=pp+2*ValoreLettera(parola[l], Sacchetto);
-                                                    }
-                                                    else if(Griglia[r+l][c][1]=='3')
-                                                    {
-                                                        pp=pp+3*ValoreLettera(parola[l], Sacchetto);
-                                                    }
-
-                                                    if(Griglia[r+l][c][2]=='3')
-                                                    {
-                                                        mp=mp*3;
-                                                    }
-                                                    else if(Griglia[r+l][c][2]=='2')
-                                                    {
-                                                        mp=mp*2;
-                                                    }
-                                                }
-
-                                                pp=pp*mp;
-
-                                                // Calcola il punteggio delle intersezioni (se esistono)
-                                                for(unsigned int l=0;l<parola.length();++l) // Per ogni lettera della parola
-                                                {
-                                                    if(Griglia[l+r][c][0]==' ')
-                                                    {
-                                                        ps=0;
-                                                        ms=1;
-
-                                                        // Se la lettera della parola principale ha intersezioni e non è già sul tabellone riconta punteggio
-                                                        if(Griglia[r+l][c][0]==' ' && ((c-1>=0 && Griglia[r+l][c-1][0]!=' ') || (c+1<=16 && Griglia[r+l][c+1][0]!=' ')))
+                                                        while(scorriperpendicolare>=0 && Griglia[rc][scorriperpendicolare][0]!=' ')
                                                         {
-                                                            if(Griglia[r+l][c][1]==' ' )
-                                                            {
-                                                                ps+=ValoreLettera(parola[l], Sacchetto);
-                                                            }
-                                                            if(Griglia[r+l][c][1]=='2')
-                                                            {
-                                                                ps=ps+2*ValoreLettera(parola[l], Sacchetto);
-                                                            }
-                                                            else if(Griglia[r+l][c][1]=='3')
-                                                            {
-                                                                ps=ps+3*ValoreLettera(parola[l], Sacchetto);
-                                                            }
+                                                            --scorriperpendicolare;
+                                                        }
+                                                        ++scorriperpendicolare;
+                                                    }
 
-                                                            if(Griglia[r+l][c][2]=='3')
-                                                            {
-                                                                ms=ms*3;
-                                                            }
-                                                            else if(Griglia[r+l][c][2]=='2')
-                                                            {
-                                                                ms=ms*2;
-                                                            }
+                                                    // Scorri tutta la parola
+                                                    stringaperpendicolare="";
+                                                    while((scorriperpendicolare<C && Griglia[rc][scorriperpendicolare][0]!=' ') || scorriperpendicolare==c)
+                                                    {
+                                                        if(scorriperpendicolare==c)
+                                                        {
+                                                            stringaperpendicolare=stringaperpendicolare+parola[rc-r];
+                                                        }
+                                                        else
+                                                        {
+                                                            stringaperpendicolare=stringaperpendicolare+Griglia[rc][scorriperpendicolare][0];
+                                                        }
+                                                        ++scorriperpendicolare;
+                                                    }
+
+                                                    // Vedi se la parola esiste
+                                                    if(stringaperpendicolare.length()>3 && !ParolaEsiste(stringaperpendicolare, Dizionario))
+                                                    {
+                                                        if(Griglia[rc][c][0]==' ')
+                                                        {
+                                                            intersezionivalide=false;
+                                                        }
+                                                    }
+
+
+                                                    ++rc;
+
+                                                }
+
+                                                // Se tutte le intersezioni sono valide
+                                                if(intersezionivalide)
+                                                {
+                                                    pp=0;
+                                                    ps=0;
+                                                    mp=1;
+                                                    ms=1;
+
+                                                    // Calcola il punteggio della parola principale
+                                                    for(unsigned int l=0;l<parola.length();++l) // Per ogni lettera della parola
+                                                    {
+                                                        if(Griglia[r+l][c][1]==' ')
+                                                        {
+                                                            pp+=ValoreLettera(parola[l], Sacchetto);
+                                                        }
+                                                        if(Griglia[r+l][c][1]=='2')
+                                                        {
+                                                            pp=pp+2*ValoreLettera(parola[l], Sacchetto);
+                                                        }
+                                                        else if(Griglia[r+l][c][1]=='3')
+                                                        {
+                                                            pp=pp+3*ValoreLettera(parola[l], Sacchetto);
                                                         }
 
-                                                        // Scorri perpendicolarmente in una direzione
-                                                        scorriperpendicolare=c-1;
-                                                        if(scorriperpendicolare>=0 && Griglia[r+l][scorriperpendicolare][0]!=' ')
+                                                        if(Griglia[r+l][c][2]=='3')
                                                         {
-                                                            while(scorriperpendicolare>=0 && Griglia[r+l][scorriperpendicolare][0]!=' ')
+                                                            mp=mp*3;
+                                                        }
+                                                        else if(Griglia[r+l][c][2]=='2')
+                                                        {
+                                                            mp=mp*2;
+                                                        }
+                                                    }
+
+                                                    pp=pp*mp;
+
+                                                    // Calcola il punteggio delle intersezioni (se esistono)
+                                                    for(unsigned int l=0;l<parola.length();++l) // Per ogni lettera della parola
+                                                    {
+                                                        if(Griglia[l+r][c][0]==' ')
+                                                        {
+                                                            ps=0;
+                                                            ms=1;
+
+                                                            // Se la lettera della parola principale ha intersezioni e non è già sul tabellone riconta punteggio
+                                                            if(Griglia[r+l][c][0]==' ' && ((c-1>=0 && Griglia[r+l][c-1][0]!=' ') || (c+1<=16 && Griglia[r+l][c+1][0]!=' ')))
                                                             {
-                                                                if(Griglia[r+l][scorriperpendicolare][1]==' ')
+                                                                if(Griglia[r+l][c][1]==' ' )
                                                                 {
-                                                                    ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    ps+=ValoreLettera(parola[l], Sacchetto);
+                                                                }
+                                                                if(Griglia[r+l][c][1]=='2')
+                                                                {
+                                                                    ps=ps+2*ValoreLettera(parola[l], Sacchetto);
+                                                                }
+                                                                else if(Griglia[r+l][c][1]=='3')
+                                                                {
+                                                                    ps=ps+3*ValoreLettera(parola[l], Sacchetto);
                                                                 }
 
-                                                                if(Griglia[r+l][scorriperpendicolare][1]=='2')
-                                                                {
-                                                                    ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
-                                                                }
-                                                                else if(Griglia[r+l][scorriperpendicolare][1]=='3')
-                                                                {
-                                                                    ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
-                                                                }
-
-                                                                if(Griglia[r+l][scorriperpendicolare][2]=='3')
+                                                                if(Griglia[r+l][c][2]=='3')
                                                                 {
                                                                     ms=ms*3;
                                                                 }
-                                                                else if(Griglia[r+l][scorriperpendicolare][2]=='2')
+                                                                else if(Griglia[r+l][c][2]=='2')
                                                                 {
                                                                     ms=ms*2;
                                                                 }
-                                                                --scorriperpendicolare;
                                                             }
-                                                        }
-                                                        // Scorri perpendicolarmente nell'altra
-                                                        scorriperpendicolare=c+1;
-                                                        if(scorriperpendicolare<=16 && Griglia[r+l][scorriperpendicolare][0]!=' ')
-                                                        {
-                                                            while(scorriperpendicolare<=16 && Griglia[r+l][scorriperpendicolare][0]!=' ')
+
+                                                            // Scorri perpendicolarmente in una direzione
+                                                            scorriperpendicolare=c-1;
+                                                            if(scorriperpendicolare>=0 && Griglia[r+l][scorriperpendicolare][0]!=' ')
                                                             {
+                                                                while(scorriperpendicolare>=0 && Griglia[r+l][scorriperpendicolare][0]!=' ')
+                                                                {
+                                                                    if(Griglia[r+l][scorriperpendicolare][1]==' ')
+                                                                    {
+                                                                        ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    }
 
-                                                                if(Griglia[r+l][scorriperpendicolare][1]==' ' )
-                                                                {
-                                                                    ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
-                                                                }
+                                                                    if(Griglia[r+l][scorriperpendicolare][1]=='2')
+                                                                    {
+                                                                        ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    }
+                                                                    else if(Griglia[r+l][scorriperpendicolare][1]=='3')
+                                                                    {
+                                                                        ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    }
 
-                                                                if(Griglia[r+l][scorriperpendicolare][1]=='2')
-                                                                {
-                                                                    ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    if(Griglia[r+l][scorriperpendicolare][2]=='3')
+                                                                    {
+                                                                        ms=ms*3;
+                                                                    }
+                                                                    else if(Griglia[r+l][scorriperpendicolare][2]=='2')
+                                                                    {
+                                                                        ms=ms*2;
+                                                                    }
+                                                                    --scorriperpendicolare;
                                                                 }
-                                                                else if(Griglia[r+l][scorriperpendicolare][1]=='3')
-                                                                {
-                                                                    ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
-                                                                }
-
-                                                                if(Griglia[r+l][scorriperpendicolare][2]=='3')
-                                                                {
-                                                                    ms=ms*3;
-                                                                }
-                                                                else if(Griglia[r+l][scorriperpendicolare][2]=='2')
-                                                                {
-                                                                    ms=ms*2;
-                                                                }
-                                                                ++scorriperpendicolare;
                                                             }
+                                                            // Scorri perpendicolarmente nell'altra
+                                                            scorriperpendicolare=c+1;
+                                                            if(scorriperpendicolare<=16 && Griglia[r+l][scorriperpendicolare][0]!=' ')
+                                                            {
+                                                                while(scorriperpendicolare<=16 && Griglia[r+l][scorriperpendicolare][0]!=' ')
+                                                                {
+
+                                                                    if(Griglia[r+l][scorriperpendicolare][1]==' ' )
+                                                                    {
+                                                                        ps+=ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    }
+
+                                                                    if(Griglia[r+l][scorriperpendicolare][1]=='2')
+                                                                    {
+                                                                        ps=ps+2*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    }
+                                                                    else if(Griglia[r+l][scorriperpendicolare][1]=='3')
+                                                                    {
+                                                                        ps=ps+3*ValoreLettera(Griglia[r+l][scorriperpendicolare][0], Sacchetto);
+                                                                    }
+
+                                                                    if(Griglia[r+l][scorriperpendicolare][2]=='3')
+                                                                    {
+                                                                        ms=ms*3;
+                                                                    }
+                                                                    else if(Griglia[r+l][scorriperpendicolare][2]=='2')
+                                                                    {
+                                                                        ms=ms*2;
+                                                                    }
+                                                                    ++scorriperpendicolare;
+                                                                }
+                                                            }
+                                                            ps=ps*ms;
+                                                            pp=pp+ps;
                                                         }
-                                                        ps=ps*ms;
-                                                        pp=pp+ps;
                                                     }
+
+
+                                                    // Aggiungi eventuale bonus lettere (-> lettereeffettive.size())
+                                                    if(lettereeffettive.size()==6)
+                                                    {
+                                                        pp+=10;
+                                                    }
+                                                    else if(lettereeffettive.size()==7)
+                                                    {
+                                                        pp+=30;
+                                                    }
+                                                    else if(lettereeffettive.size()==8)
+                                                    {
+                                                        pp+=50;
+                                                    }
+
+                                                    // Aggiungi eventuale bonus jolly (->numeroscarabei==0)
+                                                    if(numeroscarabei==0)
+                                                    {
+                                                        pp+=10;
+                                                    }
+
+                                                    if(pp>punteggiomax)
+                                                    {
+                                                        //DatiParola Risultato;
+                                                        Correnti.parola=parola;
+                                                        Correnti.punteggio=pp;
+                                                        Correnti.LeggioR=CopiaLeggio;
+                                                        Correnti.riga=r;
+                                                        Correnti.colonna=c;
+                                                        Correnti.maxdirvert=true;
+
+                                                        punteggiomax=pp;
+                                                    }
+
+
                                                 }
-
-
-                                                // Aggiungi eventuale bonus lettere (-> lettereeffettive.size())
-                                                if(lettereeffettive.size()==6)
-                                                {
-                                                    pp+=10;
-                                                }
-                                                else if(lettereeffettive.size()==7)
-                                                {
-                                                    pp+=30;
-                                                }
-                                                else if(lettereeffettive.size()==8)
-                                                {
-                                                    pp+=50;
-                                                }
-
-                                                // Aggiungi eventuale bonus jolly (->numeroscarabei==0)
-                                                if(numeroscarabei==0)
-                                                {
-                                                    pp+=10;
-                                                }
-
-                                                if(pp>punteggiomax)
-                                                {
-                                                    //DatiParola Risultato;
-                                                    Correnti.parola=parola;
-                                                    Correnti.punteggio=pp;
-                                                    Correnti.LeggioR=CopiaLeggio;
-                                                    Correnti.riga=r;
-                                                    Correnti.colonna=c;
-                                                    Correnti.maxdirvert=true;
-
-                                                    punteggiomax=pp;
-                                                }
-
-
                                             }
+
                                         }
-
                                     }
                                 }
+
+
                             }
-
-
                         }
                     }
                 }
@@ -1094,4 +1115,5 @@ DatiParola SuggerimentiGenerici(string Leggio)
     VS.join();
 
     return PunteggioMassimo(OrP, OrS, VerP, VerS);
+
 }

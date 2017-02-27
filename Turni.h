@@ -1,7 +1,7 @@
 void AssegnaLeggioCorrente(string &LeggioProvvisorio)
 {
 
-    LeggioProvvisorio=Leggii[Giocatore-1];
+    LeggioProvvisorio=ManoCorrente.Leggii[ManoCorrente.Giocatore-1];
 
 }
 
@@ -38,10 +38,10 @@ void FinestraPrincipale::ImpostazioneLeggio(int tessera, QString stringa)
 
 void InizializzaLeggii()
 {
-    for(int sl=0;sl<NumeroGiocatori;++sl)
+    for(int sl=0;sl<ManoCorrente.NumeroGiocatori;++sl)
     {
-        SvuotaLeggio(Leggii[sl]);
-        RiempiLeggio(Leggii[sl]);
+        SvuotaLeggio(ManoCorrente.Leggii[sl]);
+        RiempiLeggio(ManoCorrente.Leggii[sl]);
     }
 
 }
@@ -57,28 +57,28 @@ void FinestraPrincipale::MostraLeggioGraficoCorrente(string Leggio)
 void AggiornaPunteggio(int punti)
 {
 
-    PunteggiGiocatori[Giocatore-1]=PunteggiGiocatori[Giocatore-1]+punti;
+    ManoCorrente.PunteggiGiocatori[ManoCorrente.Giocatore-1]=ManoCorrente.PunteggiGiocatori[ManoCorrente.Giocatore-1]+punti;
 
 }
 
 string InserisciParolaMiglioreGiocatore(int riga, int colonna, bool verticale)
 {
 
-    InserisciParola(riga,colonna,ParolaMx.parola,verticale);
-    RiempiLeggio(Leggii[Giocatore-1]);
-    return Leggii[Giocatore-1];
+    InserisciParola(riga,colonna,ManoCorrente.ParolaMx.parola,verticale);
+    RiempiLeggio(ManoCorrente.Leggii[ManoCorrente.Giocatore-1]);
+    return ManoCorrente.Leggii[ManoCorrente.Giocatore-1];
 }
 
 DatiParola SuggerisciGiocatoreCorrente()
 {
 
-    return SuggerimentiGenerici(Leggii[Giocatore-1]);
+    return SuggerimentiGenerici(ManoCorrente.Leggii[ManoCorrente.Giocatore-1]);
 }
 
 void GeneraParoleCompleteGiocatore(map<string, int>& ParolePossibili)
 {
 
-    GeneraParoleComplete(Leggii[Giocatore-1], ParolePossibili);
+    GeneraParoleComplete(ManoCorrente.Leggii[ManoCorrente.Giocatore-1], ParolePossibili);
 
 }
 
@@ -120,7 +120,7 @@ void RimuoviScarabeiLeggio(int &scarab, bool &ammessa, string &LeggioProvvisorio
     }
     else if(scarab==0)
     {
-        bonusnosc=true;
+        ManoCorrente.bonusnosc=true;
     }
 }
 
@@ -140,15 +140,15 @@ void FinestraPrincipale::FineGioco()
 
     if(LeggioF=="        ")
     {
-        for(int j=0;j<NumeroGiocatori;++j)
+        for(int j=0;j<ManoCorrente.NumeroGiocatori;++j)
         {
-            if(j!=Giocatore-1)
+            if(j!=ManoCorrente.Giocatore-1)
             {
                 for(int i=0;i<LETTDISP;++i)
                 {
-                    if(Leggii[j][i]!=' ')
+                    if(ManoCorrente.Leggii[j][i]!=' ')
                     {
-                        PunteggiGiocatori[Giocatore-1]+=ValoreLettera(Leggii[j][i], Sacchetto);
+                        ManoCorrente.PunteggiGiocatori[ManoCorrente.Giocatore-1]+=ValoreLettera(ManoCorrente.Leggii[j][i], Sacchetto);
                     }
 
 
@@ -157,19 +157,19 @@ void FinestraPrincipale::FineGioco()
         }
 
 
-        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[0])
+        if(max(max(max(ManoCorrente.PunteggiGiocatori[0], ManoCorrente.PunteggiGiocatori[1]), ManoCorrente.PunteggiGiocatori[2]), ManoCorrente.PunteggiGiocatori[3])==ManoCorrente.PunteggiGiocatori[0])
         {
             informazione+=" giocatore 1";
         }
-        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[1])
+        if(max(max(max(ManoCorrente.PunteggiGiocatori[0], ManoCorrente.PunteggiGiocatori[1]), ManoCorrente.PunteggiGiocatori[2]), ManoCorrente.PunteggiGiocatori[3])==ManoCorrente.PunteggiGiocatori[1])
         {
             informazione+=" giocatore 2";
         }
-        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[2])
+        if(max(max(max(ManoCorrente.PunteggiGiocatori[0], ManoCorrente.PunteggiGiocatori[1]), ManoCorrente.PunteggiGiocatori[2]), ManoCorrente.PunteggiGiocatori[3])==ManoCorrente.PunteggiGiocatori[2])
         {
             informazione+=" giocatore 3";
         }
-        if(max(max(max(PunteggiGiocatori[0], PunteggiGiocatori[1]), PunteggiGiocatori[2]), PunteggiGiocatori[3])==PunteggiGiocatori[3])
+        if(max(max(max(ManoCorrente.PunteggiGiocatori[0], ManoCorrente.PunteggiGiocatori[1]), ManoCorrente.PunteggiGiocatori[2]), ManoCorrente.PunteggiGiocatori[3])==ManoCorrente.PunteggiGiocatori[3])
         {
             informazione+=" giocatore 4";
         }
@@ -199,6 +199,6 @@ void FinestraPrincipale::VisualizzaLeggioGrafico(char lettera, int postessera)
 void ScegliNumeroGiocatori()
 {
     QInputDialog numGiocatori;
-    NumeroGiocatori=numGiocatori.getInt(0, "Scarabeo","Inserire il numero dei giocatori",2,2,4,1);
+    ManoCorrente.NumeroGiocatori=numGiocatori.getInt(0, "Scarabeo","Inserire il numero dei giocatori",2,2,4,1);
 }
 
